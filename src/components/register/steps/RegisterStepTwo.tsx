@@ -30,9 +30,17 @@ const RegisterStepTwo = () => {
           type="date"
           name="dob"
           label="Date of Birth"
-          value={formData.dob}
+          value={
+            formData.dob instanceof Date
+              ? formData.dob.toISOString().split("T")[0]
+              : formData.dob
+          }
           onChange={handleChange}
-          error={formErrors.dob}
+          error={
+            formErrors.dob instanceof Date
+              ? formErrors.dob.toISOString()
+              : formErrors.dob
+          }
         />
         <FloatingInput
           id="national_id"

@@ -2,7 +2,12 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import OpenLayout from "@/layouts/OpenLayout";
 import useScreenSize from "./hooks/useScreenSize";
-import { AuthRedirect, GuestRedirect } from "./components";
+import {
+  AuthRedirect,
+  GuestRedirect,
+  InstallPrompt,
+  OfflineIndicator,
+} from "./components";
 import {
   Home,
   Login,
@@ -126,7 +131,14 @@ function App() {
           path="/change-password"
           element={<GuestRedirect element={<ChangePasswordExternal />} />}
         />
+
+        {/* Catch-all route for 404 - This must be the last route */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
+
+      {/* PWA Components */}
+      <InstallPrompt />
+      <OfflineIndicator />
 
       {/* Sonner Toast notification */}
       <Toaster

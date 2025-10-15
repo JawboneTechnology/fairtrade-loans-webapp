@@ -1,5 +1,4 @@
 import { toast } from "sonner";
-import { RiLock2Fill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/store/UseAuthStore";
 import useAuthQueries from "@/hooks/useAuthQueries";
@@ -99,48 +98,144 @@ const ResetPasswordCode = ({ toggleScreens }: ResetPasswordProps) => {
   };
 
   const disabled = !loginFormData?.otp_code || loading;
-  const buttonClass = `${
-    disabled
-      ? "bg-primary/50 cursor-not-allowed"
-      : "bg-primary hover:bg-primary-slight"
-  } text-white rounded-md mt-3 w-full`;
+  const isCodeComplete = resetCode.every((digit) => digit !== "");
 
   return (
-    <div className="bg-light p-5 pb-10 rounded-md border border-primary/50">
-      <div className="text-lg font-semibold mb-3">Confirm OTP Code</div>
-
-      <p className="text-dark2">
-        Enter the 6-digit code sent to your email address to reset your
-        password.
-      </p>
-
-      <div className="flex justify-center gap-3 sm:gap-5 mt-5">
-        {/* Reset Code Inputs */}
-        {resetCode.map((digit, index) => (
-          <input
-            key={index}
-            type="text"
-            value={digit}
-            onChange={(e) => handleInputChange(e, index)}
-            onKeyDown={(e) => handleKeyDown(e, index)}
-            maxLength={1}
-            ref={(el) => {
-              inputRefs.current[index] = el;
-            }}
-            className="w-12 h-12 text-center border focus:outline-primary border-gray rounded-md text-2xl text-primary"
-          />
-        ))}
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+          <span className="text-2xl">📱</span>
+        </div>
+        <h3 className="text-xl font-bold text-dark mb-2">
+          Enter Verification Code
+        </h3>
+        <p className="text-sm text-dark/70 leading-relaxed">
+          We've sent a 6-digit code to your phone number ending in{" "}
+          <span className="font-semibold text-primary">
+            ***{loginFormData.phone?.slice(-3)}
+          </span>
+        </p>
       </div>
 
-      {/* Submit Button */}
-      <div className="mt-5">
+      {/* OTP Input Section */}
+      <div className="space-y-4">
+        <div className="flex justify-center gap-2 sm:gap-3">
+          {resetCode.map((digit, index) => (
+            <div key={index} className="relative">
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={digit}
+                onChange={(e) => handleInputChange(e, index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                maxLength={1}
+                ref={(el) => {
+                  inputRefs.current[index] = el;
+                }}
+                className={`
+                  w-12 h-14 sm:w-14 sm:h-16 text-center text-xl sm:text-2xl font-bold
+                  border-2 rounded-xl transition-all duration-200
+                  ${
+                    digit
+                      ? "border-primary bg-primary/5 text-primary"
+                      : "border-gray-200 bg-gray-50 text-dark hover:border-gray-300"
+                  }
+                  focus:outline-none focus:border-primary focus:bg-white focus:shadow-lg focus:scale-105
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                `}
+                disabled={loading}
+                autoComplete="one-time-code"
+              />
+
+              {/* Animated underline */}
+              <div
+                className={`
+                absolute bottom-1 left-1/2 transform -translate-x-1/2 h-0.5 rounded-full transition-all duration-300
+                ${digit ? "w-8 bg-primary" : "w-0 bg-gray-300"}
+              `}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Progress indicator */}
+        <div className="flex justify-center">
+          <div className="flex space-x-1">
+            {resetCode.map((digit, index) => (
+              <div
+                key={index}
+                className={`
+                  w-2 h-2 rounded-full transition-all duration-200
+                  ${digit ? "bg-primary" : "bg-gray-200"}
+                `}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="space-y-3">
         <UniversalButton
-          title={loading ? "Loading..." : "Validate & Login"}
-          className={buttonClass}
+          title={
+            loading
+              ? "Verifying..."
+              : isCodeComplete
+              ? "🚀 Verify & Continue"
+              : "Enter Complete Code"
+          }
+          className={`
+            w-full py-4 text-lg font-semibold rounded-2xl transition-all duration-200
+            ${
+              disabled
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl transform hover:scale-[1.02]"
+            }
+          `}
           handleClick={handleSendResetCode}
-          icon={<RiLock2Fill />}
           disabled={disabled}
         />
+
+        {/* Resend Code */}
+        <div className="text-center">
+          <button
+            onClick={() => {
+              // Add resend functionality here
+              toast.info("Resending code...");
+            }}
+            className="text-sm text-primary hover:text-primary/80 font-medium bg-primary/5 hover:bg-primary/10 px-4 py-2 rounded-full transition-colors"
+            disabled={loading}
+          >
+            📤 Didn't receive code? Resend
+          </button>
+        </div>
+      </div>
+
+      {/* Timer or additional info */}
+      <div className="bg-gray-50 rounded-xl p-4 text-center">
+        <div className="flex items-center justify-center space-x-2 mb-2">
+          <span className="text-sm">⏱️</span>
+          <span className="text-sm font-medium text-dark">
+            Code expires in 5 minutes
+          </span>
+        </div>
+        <p className="text-xs text-dark/60">
+          For security, this code will expire automatically
+        </p>
+      </div>
+
+      {/* Back Button */}
+      <div className="text-center">
+        <button
+          onClick={() => toggleScreens("")}
+          className="inline-flex items-center text-sm font-medium text-dark/70 hover:text-dark bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-colors"
+          disabled={loading}
+        >
+          <span className="mr-1">←</span>
+          Change Phone Number
+        </button>
       </div>
 
       <DebugComponent title="Reset Password Form" debugData={loginFormData} />

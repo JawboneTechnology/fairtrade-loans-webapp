@@ -6,102 +6,186 @@ const LoanGrantSelectionScreen = () => {
   const [selectedOption, setSelectedOption] = useState("loans"); // Default to loans
 
   return (
-    <div className="h-full bg-gray-50 p-6 pb-[100px]">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-white to-secondary/10 pb-[100px]">
+      <div className="max-w-md mx-auto p-6">
         {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-800">Funding Options</h1>
-          <p className="text-gray-600 mt-2">Choose what you'd like to view</p>
+        <header className="text-center mb-8 pt-8">
+          <div className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+            <span className="text-4xl block">💰</span>
+          </div>
+          <h1 className="text-3xl font-bold text-dark mb-3">
+            Choose Your Path
+          </h1>
+          <p className="text-dark/70 text-lg leading-relaxed">
+            Whether you need a loan or qualify for a grant, we're here to
+            support your financial goals
+          </p>
         </header>
 
         {/* Selection Cards */}
-        <div className="space-y-4 mb-8">
+        <div className="space-y-6 mb-8">
           {/* Loans Card */}
           <div
-            className={`p-6 rounded-xl shadow-md transition-all duration-200 ${
+            className={`group cursor-pointer transform transition-all duration-300 hover:scale-[1.02] active:scale-95 ${
               selectedOption === "loans"
-                ? "bg-primary text-white"
-                : "bg-white text-gray-800"
+                ? "bg-gradient-to-br from-primary to-primary/80 shadow-2xl shadow-primary/25"
+                : "bg-white hover:shadow-2xl"
+            } rounded-3xl p-8 border-2 ${
+              selectedOption === "loans"
+                ? "border-primary/20"
+                : "border-gray-100 hover:border-primary/30"
             }`}
             onClick={() => setSelectedOption("loans")}
           >
-            <div className="flex items-center">
+            <div className="flex items-start space-x-6">
               <div
-                className={`mr-4 p-3 rounded-lg ${
-                  selectedOption === "loans" ? "bg-blue-700" : "bg-blue-100"
+                className={`p-4 rounded-2xl transition-all duration-300 ${
+                  selectedOption === "loans"
+                    ? "bg-white/20 group-hover:bg-white/30"
+                    : "bg-primary/10 group-hover:bg-primary/20"
                 }`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <span className="text-3xl">🏦</span>
               </div>
-              <div>
-                <h2 className="font-semibold text-lg">Loans</h2>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h2
+                    className={`font-bold text-2xl ${
+                      selectedOption === "loans"
+                        ? "text-white"
+                        : "text-dark group-hover:text-primary"
+                    } transition-colors`}
+                  >
+                    Personal Loans
+                  </h2>
+                  {selectedOption === "loans" && (
+                    <div className="bg-white/20 rounded-full p-2">
+                      <span className="text-white text-lg">✓</span>
+                    </div>
+                  )}
+                </div>
                 <p
-                  className={`text-sm mt-1 ${
+                  className={`text-base leading-relaxed mb-4 ${
                     selectedOption === "loans"
-                      ? "text-blue-100"
-                      : "text-gray-600"
+                      ? "text-white/90"
+                      : "text-dark/70"
                   }`}
                 >
-                  Borrow money with flexible repayment options
+                  Get the funds you need with competitive rates and flexible
+                  repayment terms
                 </p>
+                <div className="flex flex-wrap gap-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedOption === "loans"
+                        ? "bg-white/20 text-white"
+                        : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    Quick Approval
+                  </span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedOption === "loans"
+                        ? "bg-white/20 text-white"
+                        : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    Flexible Terms
+                  </span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedOption === "loans"
+                        ? "bg-white/20 text-white"
+                        : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    Up to $50,000
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Grants Card */}
           <div
-            className={`p-6 rounded-xl shadow-md transition-all duration-200 ${
+            className={`group cursor-pointer transform transition-all duration-300 hover:scale-[1.02] active:scale-95 ${
               selectedOption === "grants"
-                ? "bg-secondary text-dark"
-                : "bg-white text-gray-800"
+                ? "bg-gradient-to-br from-secondary to-secondary/80 shadow-2xl shadow-secondary/25"
+                : "bg-white hover:shadow-2xl"
+            } rounded-3xl p-8 border-2 ${
+              selectedOption === "grants"
+                ? "border-secondary/20"
+                : "border-gray-100 hover:border-secondary/30"
             }`}
             onClick={() => setSelectedOption("grants")}
           >
-            <div className="flex items-center">
+            <div className="flex items-start space-x-6">
               <div
-                className={`mr-4 p-3 rounded-lg ${
-                  selectedOption === "grants" ? "bg-white" : "bg-green-100"
+                className={`p-4 rounded-2xl transition-all duration-300 ${
+                  selectedOption === "grants"
+                    ? "bg-dark/10 group-hover:bg-dark/20"
+                    : "bg-secondary/10 group-hover:bg-secondary/20"
                 }`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2zM10 8.5a.5.5 0 11-1 0 .5.5 0 011 0zm5 5a.5.5 0 11-1 0 .5.5 0 011 0z"
-                  />
-                </svg>
+                <span className="text-3xl">🎁</span>
               </div>
-              <div>
-                <h2 className="font-semibold text-lg">Grants</h2>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h2
+                    className={`font-bold text-2xl ${
+                      selectedOption === "grants"
+                        ? "text-dark"
+                        : "text-dark group-hover:text-dark/80"
+                    } transition-colors`}
+                  >
+                    Financial Grants
+                  </h2>
+                  {selectedOption === "grants" && (
+                    <div className="bg-dark/10 rounded-full p-2">
+                      <span className="text-dark text-lg">✓</span>
+                    </div>
+                  )}
+                </div>
                 <p
-                  className={`text-sm mt-1 ${
+                  className={`text-base leading-relaxed mb-4 ${
                     selectedOption === "grants"
-                      ? "text-dark"
-                      : "text-gray-600"
+                      ? "text-dark/80"
+                      : "text-dark/70"
                   }`}
                 >
-                  Funding you don't need to repay
+                  Free funding opportunities that don't require repayment -
+                  perfect for qualifying individuals
                 </p>
+                <div className="flex flex-wrap gap-2">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedOption === "grants"
+                        ? "bg-dark/10 text-dark"
+                        : "bg-secondary/10 text-dark"
+                    }`}
+                  >
+                    No Repayment
+                  </span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedOption === "grants"
+                        ? "bg-dark/10 text-dark"
+                        : "bg-secondary/10 text-dark"
+                    }`}
+                  >
+                    Eligibility Based
+                  </span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      selectedOption === "grants"
+                        ? "bg-dark/10 text-dark"
+                        : "bg-secondary/10 text-dark"
+                    }`}
+                  >
+                    Up to $25,000
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -109,25 +193,93 @@ const LoanGrantSelectionScreen = () => {
 
         {/* Continue Button */}
         <button
-          className={`w-full py-3 px-4 rounded-lg font-medium shadow-md ${selectedOption === "loans"
-              ? "bg-primary hover:bg-blue-700 text-white"
-              : "bg-secondary hover:bg-secondary/80 text-dark"
-            } transition-colors`}
+          className={`w-full py-4 px-6 rounded-2xl font-bold text-lg shadow-2xl transform hover:scale-[1.02] active:scale-95 transition-all duration-200 ${
+            selectedOption === "loans"
+              ? "bg-gradient-to-r from-primary to-primary/80 hover:from-primary hover:to-primary text-white shadow-primary/30"
+              : "bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary hover:to-secondary text-dark shadow-secondary/30"
+          }`}
           onClick={() => navigate(`/${selectedOption}`)}
         >
-          View {selectedOption === "loans" ? "Loans" : "Grants"}
+          <div className="flex items-center justify-center space-x-3">
+            <span>
+              {selectedOption === "loans" ? "Explore Loans" : "Browse Grants"}
+            </span>
+            <span className="text-xl">
+              {selectedOption === "loans" ? "🏦" : "🎁"}
+            </span>
+          </div>
         </button>
 
-        {/* Additional Info */}
-        <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-          <h3 className="font-medium text-gray-800 mb-2">
-            Need help deciding?
-          </h3>
-          <p className="text-sm text-gray-600">
+        {/* Comparison Info */}
+        <div className="mt-8 bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
+          <div className="text-center mb-4">
+            <span className="text-2xl">💡</span>
+          </div>
+          <h3 className="font-bold text-dark text-lg mb-3 text-center">
             {selectedOption === "loans"
-              ? "Loans need to be repaid with interest but often have higher amounts available."
-              : "Grants are free money but typically have more eligibility requirements."}
+              ? "Why Choose Loans?"
+              : "Why Choose Grants?"}
+          </h3>
+          <div className="space-y-3">
+            {selectedOption === "loans" ? (
+              <>
+                <div className="flex items-start space-x-3">
+                  <span className="text-primary mt-1">✓</span>
+                  <p className="text-dark/80 text-sm">
+                    Higher funding amounts available (up to $50,000)
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="text-primary mt-1">✓</span>
+                  <p className="text-dark/80 text-sm">
+                    Faster approval process with competitive rates
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="text-primary mt-1">✓</span>
+                  <p className="text-dark/80 text-sm">
+                    Build credit history with responsible repayment
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-start space-x-3">
+                  <span className="text-secondary mt-1">✓</span>
+                  <p className="text-dark/80 text-sm">
+                    No repayment required - it's free money
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="text-secondary mt-1">✓</span>
+                  <p className="text-dark/80 text-sm">
+                    Perfect for specific qualifying circumstances
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <span className="text-secondary mt-1">✓</span>
+                  <p className="text-dark/80 text-sm">
+                    Designed to help communities and individuals thrive
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Switch Option */}
+        <div className="mt-6 text-center">
+          <p className="text-dark/60 text-sm mb-3">
+            Not sure which option is right for you?
           </p>
+          <button
+            onClick={() =>
+              setSelectedOption(selectedOption === "loans" ? "grants" : "loans")
+            }
+            className="text-primary hover:text-primary/80 font-semibold text-sm underline transition-colors"
+          >
+            Compare {selectedOption === "loans" ? "Grants" : "Loans"} Instead
+          </button>
         </div>
       </div>
     </div>

@@ -26,7 +26,7 @@ const BottomNavigationComponent = () => {
   }, [pathname]);
 
   return (
-    <div className="w-full bg-primary p-3 fixed bottom-0 left-0 z-20 border-t border-primary/50 shadow-lg">
+    <div className="w-full bg-gradient-to-br from-primary via-primary to-blue-600 p-3 fixed bottom-0 left-0 z-20 border-t border-primary/50 shadow-lg">
       <div className="flex justify-around items-center">
         {/* Home */}
         <div

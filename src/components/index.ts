@@ -16,6 +16,7 @@ export { default as UniversalButton } from "./utils/UniversalButton";
 export { default as ConfirmDeleteModal } from "./utils/ConfirmDeleteModal";
 export { default as CircularProgressBar } from "./utils/CircularProgressBar";
 export { default as AccountDeleteConsent } from "./utils/AccountDeleteConsent";
+export { QRCodeGenerator } from "./utils/QRCodeGenerator";
 
 // Login Components
 export { default as AuthNotice } from "./login/AuthNotice";
@@ -91,3 +92,7 @@ export { default as GrantsLoadingSkeleton } from './grants/GrantsLoadingSkeleton
 export { default as GrantDetailsComponent } from './grants/GrantDetailsComponent'
 export { default as ApplyForGrantComponent } from './grants/ApplyForGrantComponent'
 export { default as GrantApplicationSkeleton } from './grants/GrantApplicationSkeleton'
+
+// PWA Components
+export { InstallPrompt } from './pwa/InstallPrompt'
+export { OfflineIndicator } from './pwa/OfflineIndicator'
