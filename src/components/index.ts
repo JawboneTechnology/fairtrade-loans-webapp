@@ -64,6 +64,7 @@ export { default as UpdatePasswordComponent } from './changePassword/ChangePassw
 // Payments Components
 export { default as PaymentsComponent } from './payments/PaymentsComponent'
 export { default as PaymentSkeletonLoader } from './payments/PaymentSkeletonLoader'
+export { default as MakePaymentComponent } from './payments/MakePaymentComponent'
 
 // Range Components
 export { default as RangeSlider } from './range/RangeSlider'

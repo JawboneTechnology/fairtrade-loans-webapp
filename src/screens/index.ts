@@ -23,3 +23,4 @@ export { default as ChangePassword } from "./ChangePasswordScreen";
 export { default as LoansGrants } from "./LoanGrantSelectionScreen";
 export { default as CreateDependant } from "./CreateDependantScreen";
 export { default as ChangePasswordExternal } from "./ChangePasswordExternalScreen";
+export { default as MakePayment } from "./MakePaymentScreen";

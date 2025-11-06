@@ -32,6 +32,7 @@ import {
   CreateDependant,
   ValidateProfile,
   ChangePasswordExternal,
+  MakePayment,
 } from "./screens";
 
 function App() {
@@ -83,6 +84,10 @@ function App() {
           <Route
             path="/loan-details/:id"
             element={<AuthRedirect element={<LoanDetails />} />}
+          />
+          <Route
+            path="/make-payment"
+            element={<AuthRedirect element={<MakePayment />} />}
           />
           <Route
             path="/payments"

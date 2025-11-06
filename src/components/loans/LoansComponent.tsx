@@ -308,7 +308,7 @@ const LoansComponent = () => {
                                       ((Number(loan.loan_amount) -
                                         Number(loan.loan_balance)) /
                                         Number(loan.loan_amount)) *
-                                        100
+                                      100
                                     )
                                   )}%`,
                                 }}
@@ -331,7 +331,14 @@ const LoansComponent = () => {
                         </button>
                         <button
                           onClick={() =>
-                            navigate("/make-payment/" + loan.loan_id)
+                            navigate("/make-payment", {
+                              state: {
+                                loanId: loan.loan_id,
+                                amount: loan.monthly_installment,
+                                loanNumber: loan.loan_number,
+                                nextDueDate: loan.next_due_date,
+                              },
+                            })
                           }
                           className="flex-1 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary hover:to-secondary text-dark font-semibold py-3 px-6 rounded-2xl transition-all duration-200 transform hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
                         >
