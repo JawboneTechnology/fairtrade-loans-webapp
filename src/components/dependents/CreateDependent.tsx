@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUser, FaArrowLeft, FaSave } from "react-icons/fa";
-import { Spinner, UniversalButton } from "@/components";
+import { FaSave } from "react-icons/fa";
+import { HiArrowNarrowLeft } from "react-icons/hi";
+import { HiUsers } from "react-icons/hi";
+import { Spinner, FloatingInput } from "@/components";
 import { useDependents } from "@/context/DependentContext";
-import { BiSolidContact } from "react-icons/bi";
-import { IoMdContacts } from "react-icons/io";
 
 const CreateDependent = () => {
   const navigate = useNavigate();
@@ -44,82 +44,75 @@ const CreateDependent = () => {
   };
 
   return (
-    <div className="h-full p-4 md:p-6">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="fixed top-5 sm:top-10 w-full max-w-[90%] sm:max-w-[80%] mx-auto z-20 ml-3 sm:ml-20">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center text-primary bg-secondary px-5 py-2 rounded-full hover:text-gray-800"
-          >
-            <FaArrowLeft className="mr-2" />
-            Back
-          </button>
+    <>
+      <div className="min-h-screen">
+        {/* Header Section with Gradient Background */}
+        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 pb-8 pt-12 px-4 rounded-b-3xl shadow-xl">
+          {/* Decorative Elements */}
+          <div className="absolute top-4 right-4 w-20 h-20 bg-secondary/10 rounded-full blur-xl"></div>
+          <div className="absolute bottom-8 left-8 w-16 h-16 bg-light/10 rounded-full blur-lg"></div>
+
+          {/* Header Content */}
+          <div className="relative z-10">
+            {/* Back Button */}
+            <button
+              onClick={() => navigate(-1)}
+              className="flex items-center text-white hover:text-white/80 bg-white/10 backdrop-blur-sm hover:bg-white/20 px-4 py-2 rounded-full mb-6 transition-all duration-200 active:scale-95 border border-white/20"
+            >
+              <HiArrowNarrowLeft className="mr-2 text-xl" />
+              Back
+            </button>
+
+            {/* Title Section */}
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center mb-3">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
+                  <HiUsers className="text-3xl text-white" />
+                </div>
+              </div>
+              <h1 className="text-white font-bold text-2xl sm:text-3xl mb-2">
+                Add New Dependent
+              </h1>
+              <p className="text-white/80 text-sm">
+                Add a family member or dependent to your account
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Form */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 p-6 pb-[100px] mt-16">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Add New Dependent
-          </h1>
-
-          <div className="h-8"></div>
-
-          <div className="">
+        {/* Main Content */}
+        <div className="px-4 -mt-4 relative z-10 pb-32">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
             <div className="space-y-6">
               {/* Personal Information Section */}
               <div>
-                <h2 className="text-lg font-medium text-primary mb-4 flex items-center">
-                  <FaUser className="mr-2 text-primary" />
-                  Personal Information
-                </h2>
+                <div className="flex items-center space-x-2 mb-4">
+                  <span className="text-2xl">👤</span>
+                  <h2 className="text-lg font-bold text-dark">
+                    Personal Information
+                  </h2>
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label
-                      htmlFor="first_name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      First Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="first_name"
-                      name="first_name"
-                      value={formData.first_name}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border ${
-                        errors.first_name ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                    />
-                    {errors.first_name && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.first_name}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="last_name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="last_name"
-                      name="last_name"
-                      value={formData.last_name}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border ${
-                        errors.last_name ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                    />
-                    {errors.last_name && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.last_name}
-                      </p>
-                    )}
-                  </div>
+                  <FloatingInput
+                    id="first_name"
+                    name="first_name"
+                    label="First Name"
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    type="text"
+                    required
+                    error={errors.first_name}
+                  />
+                  <FloatingInput
+                    id="last_name"
+                    name="last_name"
+                    label="Last Name"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    type="text"
+                    required
+                    error={errors.last_name}
+                  />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -135,9 +128,8 @@ const CreateDependent = () => {
                       name="gender"
                       value={formData.gender}
                       onChange={handleChange}
-                      className={`w-full px-3 py-3 border ${
-                        errors.gender ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      className={`w-full px-4 py-3 border-2 ${errors.gender ? "border-red-300" : "border-gray-300"
+                        } rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
                     >
                       <option value="">Select Gender</option>
                       {genders.map((option) => (
@@ -166,11 +158,10 @@ const CreateDependent = () => {
                       value={formData.date_of_birth}
                       onChange={handleChange}
                       max={calculateMaxDate()}
-                      className={`w-full px-3 py-2 border ${
-                        errors.date_of_birth
-                          ? "border-red-300"
-                          : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                      className={`w-full px-4 py-3 border-2 ${errors.date_of_birth
+                        ? "border-red-300"
+                        : "border-gray-300"
+                        } rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
                     />
                     {errors.date_of_birth && (
                       <p className="mt-1 text-sm text-red-600">
@@ -183,67 +174,45 @@ const CreateDependent = () => {
 
               {/* Contact Information Section */}
               <div>
-                <h2 className="text-lg font-medium text-primary mb-4 flex items-center">
-                  <BiSolidContact className="mr-2 text-primary" />
-                  Contact Information
-                </h2>
+                <div className="flex items-center space-x-2 mb-4">
+                  <span className="text-2xl">📧</span>
+                  <h2 className="text-lg font-bold text-dark">
+                    Contact Information
+                  </h2>
+                </div>
 
                 <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border ${
-                        errors.email ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                    />
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="phone"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Phone Number *
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border ${
-                        errors.phone ? "border-red-300" : "border-gray-300"
-                      } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-                    />
-                    {errors.phone && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.phone}
-                      </p>
-                    )}
-                  </div>
+                  <FloatingInput
+                    id="email"
+                    name="email"
+                    label="Email Address"
+                    value={formData.email}
+                    onChange={handleChange}
+                    type="email"
+                    required
+                    error={errors.email}
+                  />
+                  <FloatingInput
+                    id="phone"
+                    name="phone"
+                    label="Phone Number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    type="tel"
+                    required
+                    error={errors.phone}
+                  />
                 </div>
               </div>
 
               {/* Relationship Section */}
               <div>
-                <h2 className="text-lg font-medium text-primary mb-4 flex items-center">
-                  <IoMdContacts className="mr-2 text-primary text-2xl" />
-                  Relationship
-                </h2>
+                <div className="flex items-center space-x-2 mb-4">
+                  <span className="text-2xl">👥</span>
+                  <h2 className="text-lg font-bold text-dark">
+                    Relationship
+                  </h2>
+                </div>
                 <div>
                   <label
                     htmlFor="relationship"
@@ -256,9 +225,8 @@ const CreateDependent = () => {
                     name="relationship"
                     value={formData.relationship}
                     onChange={handleChange}
-                    className={`w-full px-3 py-3 border ${
-                      errors.relationship ? "border-red-300" : "border-gray-300"
-                    } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+                    className={`w-full px-4 py-3 border-2 ${errors.relationship ? "border-red-300" : "border-gray-300"
+                      } rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
                   >
                     <option value="">Select Relationship</option>
                     {relationships.map((option) => (
@@ -274,32 +242,45 @@ const CreateDependent = () => {
                   )}
                 </div>
               </div>
-
-              <div className="fixed bottom-0 left-0 w-full bg-white shadow-md p-4 flex justify-center gap-3 border-t border-gray-200 z-10">
-                <UniversalButton
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 sm:w-[180px]"
-                  title={"Cancel"}
-                  handleClick={() => navigate(-1)}
-                />
-                <UniversalButton
-                  className="bg-primary hover:bg-primary-dark w-full text-white rounded-md py-2 sm:w-1/2"
-                  title={!loading && "Save Dependent"}
-                  handleClick={handleSubmit}
-                  disabled={isSubmitting}
-                  icon={
-                    loading ? (
-                      <Spinner size="md" color="white" />
-                    ) : (
-                      <FaSave className="ml-2" />
-                    )
-                  }
-                />
-              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Fixed Action Buttons at Bottom */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl">
+        <div className="max-w-[90%] sm:max-w-[80%] mx-auto p-4">
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate(-1)}
+              className="flex-1 sm:flex-none sm:w-[180px] py-4 px-6 rounded-2xl font-semibold bg-gray-100 hover:bg-gray-200 text-dark transition-all duration-200 border border-gray-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className={`flex-1 py-4 px-6 rounded-2xl font-bold transition-all duration-200 flex items-center justify-center space-x-2 ${isSubmitting
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl transform hover:scale-[1.02] active:scale-95"
+                }`}
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" color="text-white" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                <>
+                  <FaSave className="text-lg" />
+                  <span>Save</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

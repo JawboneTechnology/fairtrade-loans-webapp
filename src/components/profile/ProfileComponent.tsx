@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash, FaKey } from "react-icons/fa";
 import { useUserAccount } from "@/context/UserAccountContext";
@@ -5,12 +6,16 @@ import useCurrencyFormatter from "@/hooks/useCurrencyFormatter";
 import useAuthStore from "@/store/UseAuthStore";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { MdEditNote } from "react-icons/md";
+import { SupportContactDrawer } from "@/components";
 
 const ProfileComponent = () => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const { profileDetails: user } = useUserAccount();
   const { formatCurrency } = useCurrencyFormatter();
+  const [showSupportDrawer, setShowSupportDrawer] = useState<boolean>(false);
+
+  const toggleSupportDrawer = () => setShowSupportDrawer((prev) => !prev);
 
   return (
     <>
@@ -50,9 +55,8 @@ const ProfileComponent = () => {
                 </div>
                 {/* Verification Badge */}
                 <div
-                  className={`absolute -bottom-1 -right-1 w-8 h-8 rounded-full border-3 border-white flex items-center justify-center ${
-                    user?.email_verified_at ? "bg-green-500" : "bg-orange-500"
-                  }`}
+                  className={`absolute -bottom-1 -right-1 w-8 h-8 rounded-full border-3 border-white flex items-center justify-center ${user?.email_verified_at ? "bg-green-500" : "bg-orange-500"
+                    }`}
                 >
                   <span className="text-white text-xs font-bold">
                     {user?.email_verified_at ? "✓" : "!"}
@@ -78,11 +82,10 @@ const ProfileComponent = () => {
 
               {/* Status Badge */}
               <div
-                className={`mt-4 px-4 py-2 rounded-full text-xs font-bold ${
-                  user?.email_verified_at
-                    ? "bg-green-100 text-green-700"
-                    : "bg-orange-100 text-orange-700"
-                }`}
+                className={`mt-4 px-4 py-2 rounded-full text-xs font-bold ${user?.email_verified_at
+                  ? "bg-green-100 text-green-700"
+                  : "bg-orange-100 text-orange-700"
+                  }`}
               >
                 {user?.email_verified_at
                   ? "🎉 Verified Account"
@@ -362,7 +365,7 @@ const ProfileComponent = () => {
               or concerns about your account.
             </p>
             <button
-              onClick={() => navigate("/notifications")}
+              onClick={toggleSupportDrawer}
               className="bg-white hover:bg-gray-50 text-primary font-semibold py-3 px-6 rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               📞 Contact Support
@@ -370,6 +373,12 @@ const ProfileComponent = () => {
           </div>
         </div>
       </div>
+
+      {/* Support Contact Drawer */}
+      <SupportContactDrawer
+        isOpen={showSupportDrawer}
+        onClose={toggleSupportDrawer}
+      />
     </>
   );
 };

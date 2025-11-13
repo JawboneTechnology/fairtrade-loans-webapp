@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaCircleUser } from "react-icons/fa6";
 import { BsInfoCircle } from "react-icons/bs";
-import { FaMoneyCheckAlt } from "react-icons/fa";
+import { FaMoneyCheckAlt, FaCreditCard } from "react-icons/fa";
 import { GiReceiveMoney } from "react-icons/gi";
 import useAuthStore from "@/store/UseAuthStore";
 import { VscGitStashApply } from "react-icons/vsc";
@@ -14,7 +14,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useUserAccount } from "@/context/UserAccountContext";
 import useCurrencyFormatter from "@/hooks/useCurrencyFormatter";
-import { Modal, UniversalButton, CircularProgressBar } from "@/components";
+import { Modal, UniversalButton, CircularProgressBar, SupportContactDrawer } from "@/components";
 import { useNotification } from "@/context/NotificationContext";
 
 const HomeComponent = () => {
@@ -28,6 +28,10 @@ const HomeComponent = () => {
   } = useUserAccount();
   const { formatCurrency } = useCurrencyFormatter();
   const [showFeatureModal, setShowFeatureModal] = useState<boolean>(false);
+
+  // Support contact drawer state
+  const [showSupportDrawer, setShowSupportDrawer] = useState<boolean>(false);
+
   const { calculations } = recentLoanInformation || {};
   const {
     id,
@@ -41,6 +45,9 @@ const HomeComponent = () => {
   } = calculations || {};
 
   const toggleShowFeatureModal = () => setShowFeatureModal((prev) => !prev);
+
+  // Support drawer functions
+  const toggleSupportDrawer = () => setShowSupportDrawer((prev) => !prev);
 
   useEffect(() => {
     fetchRecentLoanInformation();
@@ -345,6 +352,27 @@ const HomeComponent = () => {
                 </div>
               </div>
 
+              {/* Make Payment Action */}
+              <div
+                onClick={() => navigate("/payments")}
+                className="group bg-gradient-to-br from-green-50 to-green-100 hover:from-green-100 hover:to-green-150 rounded-2xl p-5 border border-green-200 cursor-pointer transform hover:scale-[1.02] transition-all duration-200 active:scale-95"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-green-100 group-hover:bg-green-200 rounded-2xl p-3 transition-colors">
+                    <FaCreditCard className="text-2xl text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-dark group-hover:text-green-700 transition-colors">
+                      My Payment
+                    </h3>
+                    <p className="text-dark/60 text-sm">
+                      Pay your loan installment
+                    </p>
+                  </div>
+                  <HiArrowNarrowRight className="text-green-600 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+
               {/* View Transactions Action */}
               <div
                 onClick={() => navigate("/payments")}
@@ -419,7 +447,7 @@ const HomeComponent = () => {
               loans, grants, or your account.
             </p>
             <button
-              onClick={() => navigate("/notifications")}
+              onClick={toggleSupportDrawer}
               className="bg-white hover:bg-gray-50 text-primary font-semibold py-2 px-6 rounded-full border border-primary/20 hover:border-primary/40 transition-all duration-200"
             >
               Contact Support
@@ -452,6 +480,12 @@ const HomeComponent = () => {
           </div>
         </Modal>
       )}
+
+      {/* Support Contact Drawer */}
+      <SupportContactDrawer
+        isOpen={showSupportDrawer}
+        onClose={toggleSupportDrawer}
+      />
     </>
   );
 };

@@ -5,6 +5,7 @@ export { default as Debugger } from "./utils/Debugger";
 export { default as RightDrawer } from "./utils/RightDrawer";
 export { default as ProgressBar } from "./utils/ProgressBar";
 export { default as BottomDrawer } from "./utils/BottomDrawer";
+export { default as SupportContactDrawer } from "./utils/SupportContactDrawer";
 export { default as AuthRedirect } from "./utils/AuthRedirect";
 export { default as CustomSwitch } from "./utils/CustomSwitch";
 export { default as FilesUploader } from "./utils/FilesUploader";

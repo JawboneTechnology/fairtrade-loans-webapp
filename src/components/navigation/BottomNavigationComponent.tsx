@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { AiFillHome } from "react-icons/ai";
-import { FaMoneyCheckAlt } from "react-icons/fa";
 import { GiReceiveMoney } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import { useLocation, useNavigate } from "react-router-dom";
+import { FaGift } from "react-icons/fa";
 
 const BottomNavigationComponent = () => {
   const navigate = useNavigate();
@@ -26,13 +26,12 @@ const BottomNavigationComponent = () => {
   }, [pathname]);
 
   return (
-    <div className="w-full bg-gradient-to-br from-primary via-primary to-blue-600 p-3 fixed bottom-0 left-0 z-20 border-t border-primary/50 shadow-lg">
+    <div className="w-full bg-gradient-to-br from-primary via-primary to-blue-600 p-3 fixed bottom-0 left-0 z-10 border-t border-primary/50 shadow-lg">
       <div className="flex justify-around items-center">
         {/* Home */}
         <div
-          className={`flex flex-col items-center cursor-pointer ${
-            activeTab === "home" ? "text-secondary" : "text-white"
-          }`}
+          className={`flex flex-col items-center cursor-pointer ${activeTab === "home" ? "text-secondary" : "text-white"
+            }`}
           onClick={() => handleTabClick("home")}
         >
           <AiFillHome className="text-2xl" />
@@ -41,13 +40,12 @@ const BottomNavigationComponent = () => {
 
         {/* Loans */}
         <div
-          className={`flex flex-col items-center cursor-pointer ${
-            activeTab === "loans" ||
+          className={`flex flex-col items-center cursor-pointer ${activeTab === "loans" ||
             activeTab === "grants" ||
             activeTab === "loans-and-grants"
-              ? "text-secondary"
-              : "text-white"
-          }`}
+            ? "text-secondary"
+            : "text-white"
+            }`}
           onClick={() => handleTabClick("loans-and-grants")}
         >
           <GiReceiveMoney className="text-2xl" />
@@ -56,20 +54,18 @@ const BottomNavigationComponent = () => {
 
         {/* Payments */}
         <div
-          className={`flex flex-col items-center cursor-pointer ${
-            activeTab === "payments" ? "text-secondary" : "text-white"
-          }`}
-          onClick={() => handleTabClick("payments")}
+          className={`flex flex-col items-center cursor-pointer ${activeTab === "payments" ? "text-secondary" : "text-white"
+            }`}
+          onClick={() => handleTabClick("grants")}
         >
-          <FaMoneyCheckAlt className="text-2xl" />
-          <span className="text-xs mt-1">payments</span>
+          <FaGift className="text-2xl" />
+          <span className="text-xs mt-1">Grants</span>
         </div>
 
         {/* Profile */}
         <div
-          className={`flex flex-col items-center cursor-pointer ${
-            activeTab === "profile" ? "text-secondary" : "text-white"
-          }`}
+          className={`flex flex-col items-center cursor-pointer ${activeTab === "profile" ? "text-secondary" : "text-white"
+            }`}
           onClick={() => handleTabClick("profile")}
         >
           <CgProfile className="text-2xl" />
