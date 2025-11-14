@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BsExclamationCircle } from "react-icons/bs";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-interface FloatingLabelInputProps {
+interface FloatingLabelInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;
   name?: string;
   type?: string;
@@ -26,11 +26,15 @@ const FloatingInput: React.FC<FloatingLabelInputProps> = ({
   className = "",
   error = "",
   isPassword = false,
+  disabled = false,
+  ...rest
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleFocus = () => setIsFocused(true);
+  const handleFocus = () => {
+    if (!disabled) setIsFocused(true);
+  };
   const handleBlur = () => setIsFocused(false);
 
   const isLabelFloating = isFocused || value.length > 0;
@@ -48,8 +52,16 @@ const FloatingInput: React.FC<FloatingLabelInputProps> = ({
           onFocus={handleFocus}
           onBlur={handleBlur}
           required={required}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent peer pr-10"
+          disabled={disabled}
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent peer pr-10 transition-all ${
+            disabled
+              ? "border-gray-200 bg-gray-50 cursor-not-allowed opacity-60"
+              : error
+              ? "border-red-300"
+              : "border-gray-300"
+          }`}
           autoComplete="off"
+          {...rest}
         />
         <label
           htmlFor={id}

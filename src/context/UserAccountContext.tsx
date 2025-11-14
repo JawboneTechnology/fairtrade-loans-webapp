@@ -47,10 +47,10 @@ interface UserAccountContextType {
 }
 
 type RecentLoan = {
-  calculations: Calculation;
+  loans: Loan[];
 };
 
-type Calculation = {
+type Loan = {
   id: string;
   loan_number: string;
   percentage_complete: number;
@@ -58,6 +58,7 @@ type Calculation = {
   amount_paid: number;
   loan_amount: string | number;
   loan_type_name: string;
+  loan_status: string;
   applied_at: string;
 };
 
@@ -313,7 +314,7 @@ export const UserAccountProvider = ({ children }: { children: ReactNode }) => {
           const { success, message, data } = res;
 
           if (success) {
-            setRecentLoanInformation(data.recent_loan);
+            setRecentLoanInformation({ loans: data.loans || [] });
             console.log(message);
           } else {
             console.error(message);

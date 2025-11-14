@@ -61,6 +61,13 @@ body {
   .border-secondary {
     border-color: var(--secondary-color);
   }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Custom Switch Classes */

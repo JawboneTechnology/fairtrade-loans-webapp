@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FaCircleUser } from "react-icons/fa6";
-import { BsInfoCircle } from "react-icons/bs";
 import { FaMoneyCheckAlt, FaCreditCard } from "react-icons/fa";
 import { GiReceiveMoney } from "react-icons/gi";
 import useAuthStore from "@/store/UseAuthStore";
@@ -32,17 +31,8 @@ const HomeComponent = () => {
   // Support contact drawer state
   const [showSupportDrawer, setShowSupportDrawer] = useState<boolean>(false);
 
-  const { calculations } = recentLoanInformation || {};
-  const {
-    id,
-    applied_at,
-    loan_number,
-    loan_amount,
-    amount_paid,
-    loan_type_name,
-    outstanding_amount,
-    percentage_complete,
-  } = calculations || {};
+  const loans = recentLoanInformation?.loans || [];
+  const activeLoansCount = loans.length;
 
   const toggleShowFeatureModal = () => setShowFeatureModal((prev) => !prev);
 
@@ -145,10 +135,8 @@ const HomeComponent = () => {
                         baseColor="#ffffff20"
                         highlightColor="#ffffff40"
                       />
-                    ) : id ? (
-                      "1"
                     ) : (
-                      "0"
+                      activeLoansCount
                     )}
                   </p>
                 </div>
@@ -171,7 +159,7 @@ const HomeComponent = () => {
                         baseColor="#ffffff20"
                         highlightColor="#ffffff40"
                       />
-                    ) : id ? (
+                    ) : activeLoansCount > 0 ? (
                       "Active"
                     ) : (
                       "No Loans"
@@ -189,138 +177,158 @@ const HomeComponent = () => {
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Card Header */}
             <div className="bg-gradient-to-r from-primary/5 to-secondary/5 p-6 border-b border-gray-50">
-              <h2 className="text-xl sm:text-2xl font-bold text-dark flex items-center space-x-2">
-                {loadingRecentLoan ? (
-                  <Skeleton width={200} height={32} />
-                ) : (
-                  <>
-                    <span>💰</span>
-                    <span>
-                      {loan_type_name
-                        ? `${loan_type_name} Overview`
-                        : "Loan Dashboard"}
-                    </span>
-                  </>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl sm:text-2xl font-bold text-dark flex items-center space-x-2">
+                  {loadingRecentLoan ? (
+                    <Skeleton width={200} height={32} />
+                  ) : (
+                    <>
+                      <span>💰</span>
+                      <span>Active Loans</span>
+                    </>
+                  )}
+                </h2>
+                {!loadingRecentLoan && activeLoansCount > 0 && (
+                  <span className="text-sm text-dark/60 font-medium">
+                    {activeLoansCount} {activeLoansCount === 1 ? "Loan" : "Loans"}
+                  </span>
                 )}
-              </h2>
+              </div>
             </div>
 
-            {/* Progress Section */}
-            <div className="p-6 text-center">
-              {loadingRecentLoan ? (
-                <div className="flex justify-center">
-                  <Skeleton circle height={220} width={220} />
-                </div>
-              ) : (
-                <div className="relative inline-block">
-                  <CircularProgressBar
-                    labelSize="48px"
-                    completed={percentage_complete || 0}
-                    height="220px"
-                    isLabelVisible
-                  />
-                  {!id && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/90 rounded-full">
-                      <div className="text-center">
-                        <div className="text-4xl mb-2">🎯</div>
-                        <p className="text-sm font-medium text-dark">
-                          Ready to start?
-                        </p>
-                      </div>
+            {/* Horizontal Scrolling Loan Cards */}
+            {loadingRecentLoan ? (
+              <div className="p-6">
+                <div className="flex gap-4 overflow-x-auto pb-4">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="flex-shrink-0 w-[320px]">
+                      <Skeleton height={280} borderRadius={16} />
                     </div>
-                  )}
+                  ))}
                 </div>
-              )}
-            </div>
-
-            {/* Loan Statistics */}
-            <div className="grid grid-cols-2 gap-4 p-6 pt-0">
-              <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-4 text-center">
-                <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-primary text-xl">📊</span>
-                </div>
-                <h3 className="font-bold text-dark text-sm mb-1">
-                  Outstanding
-                </h3>
-                <p className="text-primary font-bold text-lg">
-                  {loadingRecentLoan ? (
-                    <Skeleton width={80} height={20} />
-                  ) : outstanding_amount ? (
-                    formatCurrency(Number(outstanding_amount))
-                  ) : (
-                    "----"
-                  )}
-                </p>
               </div>
+            ) : activeLoansCount > 0 ? (
+              <div className="p-6">
+                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+                  {loans.map((loan) => (
+                    <div
+                      key={loan.id}
+                      className="flex-shrink-0 w-[320px] bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 hover:shadow-xl transition-all duration-200 cursor-pointer"
+                      onClick={() => navigate(`/loan-details/${loan.id}`)}
+                    >
+                      {/* Loan Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <div className="bg-primary/10 rounded-lg p-2">
+                              <GiReceiveMoney className="text-primary text-lg" />
+                            </div>
+                            <div>
+                              <p className="text-xs text-dark/60 font-medium">Loan Number</p>
+                              <p className="text-sm font-bold text-dark">{loan.loan_number}</p>
+                            </div>
+                          </div>
+                          <h3 className="text-lg font-bold text-dark mb-1">
+                            {loan.loan_type_name}
+                          </h3>
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                            {loan.loan_status}
+                          </span>
+                        </div>
+                      </div>
 
-              <div className="bg-gradient-to-br from-secondary/5 to-secondary/10 rounded-2xl p-4 text-center">
-                <div className="bg-secondary/10 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-dark text-xl">💵</span>
+                      {/* Progress Circle */}
+                      <div className="flex justify-center my-6">
+                        <div className="relative">
+                          <CircularProgressBar
+                            labelSize="32px"
+                            completed={loan.percentage_complete || 0}
+                            height="140px"
+                            isLabelVisible
+                          />
+                        </div>
+                      </div>
+
+                      {/* Loan Statistics */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between p-3 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl">
+                          <div>
+                            <p className="text-xs text-dark/60 font-medium">Outstanding</p>
+                            <p className="text-sm font-bold text-primary">
+                              {formatCurrency(Number(loan.outstanding_amount))}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-dark/60 font-medium">Amount Paid</p>
+                            <p className="text-sm font-bold text-dark">
+                              {formatCurrency(Number(loan.amount_paid))}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-gray-200">
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs text-dark/60">Total Loan Amount</p>
+                            <p className="text-sm font-bold text-dark">
+                              {formatCurrency(Number(loan.loan_amount))}
+                            </p>
+                          </div>
+                          <p className="text-xs text-dark/60 mt-1">
+                            Applied: {new Date(loan.applied_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* View Details Button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/loan-details/${loan.id}`);
+                        }}
+                        className="w-full mt-4 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2"
+                      >
+                        <span>View Details</span>
+                        <HiArrowNarrowRight className="text-lg" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
-                <h3 className="font-bold text-dark text-sm mb-1">
-                  Amount Paid
-                </h3>
-                <p className="text-dark font-bold text-lg">
-                  {loadingRecentLoan ? (
-                    <Skeleton width={80} height={20} />
-                  ) : amount_paid ? (
-                    formatCurrency(Number(amount_paid))
-                  ) : (
-                    "----"
-                  )}
-                </p>
               </div>
-            </div>
+            ) : (
+              <div className="p-12 text-center">
+                <div className="text-6xl mb-4">🎯</div>
+                <h3 className="text-xl font-bold text-dark mb-2">No Active Loans</h3>
+                <p className="text-dark/60 text-sm mb-6">
+                  Start your financial journey with flexible loan options
+                </p>
+                <UniversalButton
+                  className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-3 px-6 rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
+                  title="🚀 Apply For New Loan"
+                  handleClick={() => navigate("/apply-loan")}
+                  icon={<VscGitStashApply className="text-xl" />}
+                />
+              </div>
+            )}
 
             {/* Action Buttons */}
-            <div className="p-6 pt-0 space-y-3">
-              <UniversalButton
-                className="w-full bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary text-dark font-bold py-4 px-6 rounded-2xl shadow-lg shadow-secondary/25 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
-                title="🚀 Apply For New Loan"
-                handleClick={() => navigate("/apply-loan")}
-                icon={<VscGitStashApply className="text-xl" />}
-              />
+            {activeLoansCount > 0 && (
+              <div className="p-6 pt-0 space-y-3 border-t border-gray-100">
+                <UniversalButton
+                  className="w-full bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary text-dark font-bold py-4 px-6 rounded-2xl shadow-lg shadow-secondary/25 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
+                  title="🚀 Apply For New Loan"
+                  handleClick={() => navigate("/apply-loan")}
+                  icon={<VscGitStashApply className="text-xl" />}
+                />
 
-              <UniversalButton
-                className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
-                title={id ? "📋 View Loan Details" : "💡 Explore Loans"}
-                handleClick={() =>
-                  id ? navigate("/loan-details/" + id) : navigate("/loans")
-                }
-                icon={<HiArrowNarrowRight className="text-xl" />}
-                isCustomIcon={true}
-              />
-            </div>
-
-            {/* Status Information */}
-            <div className="bg-gradient-to-r from-light/30 to-light/50 border-t border-gray-100 p-6">
-              <div className="flex items-start space-x-3">
-                <div className="bg-primary/10 rounded-full p-2 mt-0.5">
-                  <BsInfoCircle className="text-primary text-sm" />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-dark text-sm mb-1">
-                    {id ? "Loan Progress" : "Get Started Today"}
-                  </h4>
-                  <p className="text-dark/70 text-sm leading-relaxed">
-                    {loadingRecentLoan ? (
-                      <Skeleton count={2} />
-                    ) : amount_paid &&
-                      loan_amount &&
-                      applied_at &&
-                      loan_number ? (
-                      `Excellent progress! You've repaid ${formatCurrency(
-                        Number(amount_paid)
-                      )} of ${formatCurrency(
-                        Number(loan_amount)
-                      )} for Loan #${loan_number}. Keep it up! 💪`
-                    ) : (
-                      "Start your financial journey with flexible loan options. Quick approval, competitive rates, and up to 24 months repayment terms. 🌟"
-                    )}
-                  </p>
-                </div>
+                <UniversalButton
+                  className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
+                  title="💡 View All Loans"
+                  handleClick={() => navigate("/loans")}
+                  icon={<HiArrowNarrowRight className="text-xl" />}
+                  isCustomIcon={true}
+                />
               </div>
-            </div>
+            )}
           </div>
 
           {/* Quick Actions Grid */}

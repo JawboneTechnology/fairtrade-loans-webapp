@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import { BottomDrawer, FloatingInput, Spinner } from "@/components";
+import useServerSideQueries from "@/hooks/useServerSideQueries";
+import { toast } from "sonner";
 
 interface SupportContactDrawerProps {
   isOpen: boolean;
@@ -8,6 +10,7 @@ interface SupportContactDrawerProps {
 }
 
 const SupportContactDrawer = ({ isOpen, onClose }: SupportContactDrawerProps) => {
+  const { sendSupportMessage } = useServerSideQueries();
   const [supportForm, setSupportForm] = useState({
     name: '',
     email: '',
@@ -28,37 +31,53 @@ const SupportContactDrawer = ({ isOpen, onClose }: SupportContactDrawerProps) =>
   };
 
   const handleSupportSubmit = async () => {
-    if (!isFormValid()) return;
+    if (!isFormValid() || isSendingSupport) return;
 
     setIsSendingSupport(true);
     try {
-      // Simulate API call - replace with actual implementation
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await sendSupportMessage(supportForm);
 
-      // Reset form and close drawer
+      // Show success message
+      toast.success("Message sent successfully!", {
+        description: response.message || "Our support team will get back to you within 24 hours.",
+        duration: 5000,
+      });
+
+      // Reset form
       setSupportForm({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
-      onClose();
 
-      // Show success message (you could use a toast notification here)
-      alert('Thank you for contacting us! We will get back to you soon.');
+      // Close drawer after a short delay for better UX
+      setTimeout(() => {
+        onClose();
+      }, 500);
     } catch (error) {
-      alert('Failed to send message. Please try again.');
+      console.error("Error sending support message:", error);
+      toast.error("Failed to send message", {
+        description: error instanceof Error ? error.message : "Please try again later.",
+        duration: 5000,
+      });
     } finally {
       setIsSendingSupport(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (!isSendingSupport) {
+      onClose();
     }
   };
 
   return (
     <BottomDrawer
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       drawerHeight="100vh"
-      showCloseButton={true}
+      showCloseButton={!isSendingSupport}
     >
       <div className="p-6 space-y-4 pt-16">
         <div className="text-center mb-6">
@@ -79,6 +98,7 @@ const SupportContactDrawer = ({ isOpen, onClose }: SupportContactDrawerProps) =>
               type="text"
               required
               className="w-full"
+              disabled={isSendingSupport}
             />
           </div>
 
@@ -91,6 +111,7 @@ const SupportContactDrawer = ({ isOpen, onClose }: SupportContactDrawerProps) =>
               type="email"
               required
               className="w-full"
+              disabled={isSendingSupport}
             />
           </div>
 
@@ -103,6 +124,7 @@ const SupportContactDrawer = ({ isOpen, onClose }: SupportContactDrawerProps) =>
               type="text"
               required
               className="w-full"
+              disabled={isSendingSupport}
             />
           </div>
 
@@ -114,7 +136,11 @@ const SupportContactDrawer = ({ isOpen, onClose }: SupportContactDrawerProps) =>
                 onChange={(e) => handleSupportFormChange('message', e.target.value)}
                 required
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                disabled={isSendingSupport}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all ${isSendingSupport
+                  ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60'
+                  : 'border-gray-300'
+                  }`}
                 placeholder=" "
               />
               <label
@@ -134,15 +160,15 @@ const SupportContactDrawer = ({ isOpen, onClose }: SupportContactDrawerProps) =>
           <button
             onClick={handleSupportSubmit}
             disabled={!isFormValid() || isSendingSupport}
-            className={`w-full font-semibold py-3 px-6 rounded-2xl flex items-center justify-center space-x-2 transition-all duration-200 ${isFormValid() && !isSendingSupport
-              ? 'bg-gradient-to-r from-primary to-primary/80 text-white hover:shadow-lg transform hover:scale-[1.02]'
+            className={`w-full font-semibold py-4 px-6 rounded-2xl flex items-center justify-center space-x-2 transition-all duration-200 ${isFormValid() && !isSendingSupport
+              ? 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl transform hover:scale-[1.02] active:scale-95'
               : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
           >
             {isSendingSupport ? (
               <>
-                <Spinner size="sm" />
-                <span>Sending...</span>
+                <Spinner size="sm" color="text-gray-500" />
+                <span>Sending Message...</span>
               </>
             ) : (
               <>
