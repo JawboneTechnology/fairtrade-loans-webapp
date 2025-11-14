@@ -1,6 +1,6 @@
 import { FloatingInput } from "@/components";
 import { useRegister } from "@/context/UserRegisterContext";
-import { FaBriefcase, FaDollarSign, FaCalendarCheck, FaIdBadge, FaLock } from "react-icons/fa";
+import { FaBriefcase, FaLock } from "react-icons/fa";
 
 const RegisterStepThree = () => {
   const { formData, formErrors, handleChange } = useRegister();

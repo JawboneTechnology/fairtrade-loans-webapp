@@ -1,6 +1,6 @@
 import { FloatingInput } from "@/components";
 import { useRegister } from "@/context/UserRegisterContext";
-import { FaUser, FaPhone, FaVenusMars } from "react-icons/fa";
+import { FaUser, FaVenusMars } from "react-icons/fa";
 
 const RegisterStepOne = () => {
   const { formData, setFormData, formErrors, handleChange } = useRegister();

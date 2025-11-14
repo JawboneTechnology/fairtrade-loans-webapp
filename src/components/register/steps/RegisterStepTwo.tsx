@@ -1,6 +1,6 @@
 import { FloatingInput } from "@/components";
 import { useRegister } from "@/context/UserRegisterContext";
-import { FaMapMarkerAlt, FaEnvelope, FaCalendarAlt, FaIdCard } from "react-icons/fa";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 const RegisterStepTwo = () => {
   const { formData, formErrors, handleChange } = useRegister();
