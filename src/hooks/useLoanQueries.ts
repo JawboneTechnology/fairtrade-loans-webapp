@@ -146,6 +146,25 @@ const useLoanQueries = () => {
         }
     }
 
+    // Verify an Mpesa payment status
+    async function verifyPayment(verifyPayload: any): Promise<UploadResponse> {
+        try {
+            const response = await axiosClient.post(`mpesa/verify-payment`, verifyPayload);
+
+            const { success, message, data } = response.data;
+            return {
+                success,
+                message,
+                data,
+            };
+        } catch (error: any) {
+            return {
+                success: false,
+                message: error?.response?.data?.message || "An error occurred while verifying the payment",
+            };
+        }
+    }
+
     return {
         applyLoan,
         getLoanTypes,
@@ -154,6 +173,7 @@ const useLoanQueries = () => {
         getLoanStatistics,
         getGuarantorSearch,
         loanPayment,
+        verifyPayment,
     }
 };
 

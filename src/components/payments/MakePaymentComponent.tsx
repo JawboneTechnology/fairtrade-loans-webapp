@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useLoanQueries from "@/hooks/useLoanQueries";
-import { Spinner, FloatingInput } from "@/components";
+import { Spinner, FloatingInput, Modal, UniversalButton } from "@/components";
 import { FaArrowLeft } from "react-icons/fa";
+import { FaCircleCheck, FaCircleXmark } from "react-icons/fa6";
 import useCurrencyFormatter from "@/hooks/useCurrencyFormatter";
 
 interface MakePaymentProps {
@@ -14,7 +15,7 @@ interface MakePaymentProps {
 
 const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmount, loanNumber, nextDueDate }) => {
     const navigate = useNavigate();
-    const { loanPayment } = useLoanQueries();
+    const { loanPayment, verifyPayment } = useLoanQueries();
     const { formatCurrency } = useCurrencyFormatter();
     const [amount, setAmount] = useState<string>(
         defaultAmount ? String(defaultAmount) : ""
@@ -22,6 +23,43 @@ const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmoun
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+
+    const [showProcessingModal, setShowProcessingModal] = useState<boolean>(false);
+    const [showResultModal, setShowResultModal] = useState<boolean>(false);
+    const [resultType, setResultType] = useState<'success' | 'pending' | 'error' | null>(null);
+    const [resultMessage, setResultMessage] = useState<string>('');
+    const [verifyLoading, setVerifyLoading] = useState<boolean>(false);
+    const [lastVerifyPayload, setLastVerifyPayload] = useState<any>(null);
+
+    const handleRetry = async () => {
+        if (!lastVerifyPayload) return;
+        setVerifyLoading(true);
+        try {
+            const verifyResult = await verifyPayment(lastVerifyPayload);
+
+            if (verifyResult.success && verifyResult.data?.payment_complete) {
+                setResultType('success');
+                setResultMessage(verifyResult.message || 'Payment completed successfully');
+                setShowResultModal(true);
+
+                setTimeout(() => navigate('/loans'), 3000);
+            } else if (verifyResult.success && !verifyResult.data?.payment_complete) {
+                setResultType('pending');
+                setResultMessage(verifyResult.message || 'Payment is still pending.');
+                setShowResultModal(true);
+            } else {
+                setResultType('error');
+                setResultMessage(verifyResult.message || 'An error occurred while verifying payment');
+                setShowResultModal(true);
+            }
+        } catch (err: any) {
+            setResultType('error');
+            setResultMessage(err?.message || 'An error occurred while verifying the payment');
+            setShowResultModal(true);
+        } finally {
+            setVerifyLoading(false);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -63,15 +101,58 @@ const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmoun
                 loan_id: loanId,
             };
 
-            const { success, message } = await loanPayment(payload);
+            const { success, message, data } = await loanPayment(payload);
 
             if (!success) throw new Error(message || "Payment request failed");
 
-            // On success, navigate to payments screen where the user can see the payment entry
-            navigate("/payments");
+            // Show processing modal and start verification after 10s
+            setShowProcessingModal(true);
+            setResultMessage('STK Push sent to ' + normalized + '. Please check your phone and enter your M-Pesa PIN.');
+
+            // wait 10 seconds then verify
+            const verifyPayload: any = {};
+            if (data?.transaction_id) verifyPayload.transaction_id = data.transaction_id;
+            if (data?.checkout_request_id) verifyPayload.checkout_request_id = data.checkout_request_id;
+            verifyPayload.phone_number = normalized;
+            setLastVerifyPayload(verifyPayload);
+
+            setTimeout(async () => {
+                setVerifyLoading(true);
+                try {
+                    const verifyResult = await verifyPayment(verifyPayload);
+
+                    setShowProcessingModal(false);
+
+                    if (verifyResult.success && verifyResult.data?.payment_complete) {
+                        setResultType('success');
+                        setResultMessage(verifyResult.message || 'Payment completed successfully');
+                        setShowResultModal(true);
+
+                        // wait 3s then navigate to loans
+                        setTimeout(() => {
+                            navigate('/loans');
+                        }, 3000);
+                    } else if (verifyResult.success && !verifyResult.data?.payment_complete) {
+                        setResultType('pending');
+                        setResultMessage(verifyResult.message || 'Payment is still pending.');
+                        setShowResultModal(true);
+                    } else {
+                        setResultType('error');
+                        setResultMessage(verifyResult.message || 'An error occurred while verifying payment');
+                        setShowResultModal(true);
+                    }
+                } catch (err: any) {
+                    setShowProcessingModal(false);
+                    setResultType('error');
+                    setResultMessage(err?.message || 'An error occurred while verifying the payment');
+                    setShowResultModal(true);
+                } finally {
+                    setVerifyLoading(false);
+                    setLoading(false);
+                }
+            }, 10000);
         } catch (err: any) {
             setError(err?.message || "An error occurred while requesting payment");
-        } finally {
             setLoading(false);
         }
     };
@@ -81,7 +162,7 @@ const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmoun
             {/* Fullscreen background to ensure gradient covers entire viewport */}
             <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-white to-secondary/5 z-0" />
 
-            <div className="min-h-screen flex items-center justify-center py-10 relative z-10">
+            <div className="min-h-screen flex items-center py-10 relative z-10">
                 <div className="w-full max-w-2xl mx-auto bg-white rounded-2xl p-6 shadow-lg">
                     <div className="flex items-center justify-between mb-4">
                         <button
@@ -157,6 +238,68 @@ const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmoun
                             </button>
                         </div>
                     </form>
+
+                    {/* Processing modal shown while waiting for verification */}
+                    {showProcessingModal && (
+                        <Modal onClose={() => { }} closable={false} className="w-full sm:w-[40%]">
+                            <div className="p-6 w-[95%] mx-auto bg-white rounded-xl text-center">
+                                <div className="flex items-center justify-center">
+                                    <Spinner size="lg" color="text-primary" />
+                                </div>
+                                <h3 className="text-lg font-semibold mt-4">STK Push Sent</h3>
+                                <p className="mt-2 text-sm text-gray-600">{resultMessage}</p>
+                                <p className="mt-3 text-sm text-gray-500">We'll automatically check the payment status shortly.</p>
+                            </div>
+                        </Modal>
+                    )}
+
+                    {/* Result modal: success, pending, or error */}
+                    {showResultModal && (
+                        <Modal onClose={() => setShowResultModal(false)} className="w-full sm:w-[40%]">
+                            <div className="p-6 w-[95%] mx-auto bg-white rounded-xl text-center">
+                                {resultType === 'success' && (
+                                    <FaCircleCheck className="text-[80px] text-primary mx-auto" />
+                                )}
+                                {resultType === 'error' && (
+                                    <FaCircleXmark className="text-[80px] text-red-500 mx-auto" />
+                                )}
+                                {resultType === 'pending' && (
+                                    <div className="flex items-center justify-center">
+                                        <Spinner size="lg" color="text-primary" />
+                                    </div>
+                                )}
+
+                                <h3 className="text-2xl font-semibold mt-4">
+                                    {resultType === 'success' ? 'Payment Successful' : resultType === 'pending' ? 'Payment Pending' : 'Payment Error'}
+                                </h3>
+                                <p className="mt-2 text-gray-600">{resultMessage}</p>
+
+                                <div className="mt-5 flex gap-3 justify-center">
+                                    {resultType === 'pending' ? (
+                                        <>
+                                            <UniversalButton
+                                                className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-3 px-6 rounded-2xl shadow-lg"
+                                                title={verifyLoading ? 'Checking...' : 'Retry'}
+                                                handleClick={handleRetry}
+                                            />
+                                            <UniversalButton
+                                                className="bg-gray-200 text-dark font-semibold py-3 px-6 rounded-2xl"
+                                                title="Close"
+                                                handleClick={() => setShowResultModal(false)}
+                                            />
+                                        </>
+                                    ) : (
+                                        <UniversalButton
+                                            className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-3 px-6 rounded-2xl shadow-lg"
+                                            title="OK"
+                                            handleClick={() => setShowResultModal(false)}
+                                        />
+                                    )}
+                                </div>
+                            </div>
+                        </Modal>
+                    )}
+
                 </div>
             </div>
         </div>
