@@ -4,6 +4,7 @@ interface UploadResponse {
     success: boolean;
     message: string;
     data?: any;
+    payment_complete?: boolean;
 }
 
 const useLoanQueries = () => {
@@ -151,11 +152,12 @@ const useLoanQueries = () => {
         try {
             const response = await axiosClient.post(`mpesa/verify-payment`, verifyPayload);
 
-            const { success, message, data } = response.data;
+            const { success, message, data, payment_complete } = response.data;
             return {
                 success,
                 message,
                 data,
+                payment_complete,
             };
         } catch (error: any) {
             return {

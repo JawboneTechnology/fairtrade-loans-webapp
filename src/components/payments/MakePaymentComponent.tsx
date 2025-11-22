@@ -37,13 +37,11 @@ const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmoun
         try {
             const verifyResult = await verifyPayment(lastVerifyPayload);
 
-            if (verifyResult.success && verifyResult.data?.payment_complete) {
+            if (verifyResult.success && verifyResult.payment_complete) {
                 setResultType('success');
                 setResultMessage(verifyResult.message || 'Payment completed successfully');
                 setShowResultModal(true);
-
-                setTimeout(() => navigate('/loans'), 3000);
-            } else if (verifyResult.success && !verifyResult.data?.payment_complete) {
+            } else if (verifyResult.success && !verifyResult.payment_complete) {
                 setResultType('pending');
                 setResultMessage(verifyResult.message || 'Payment is still pending.');
                 setShowResultModal(true);
@@ -123,16 +121,11 @@ const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmoun
 
                     setShowProcessingModal(false);
 
-                    if (verifyResult.success && verifyResult.data?.payment_complete) {
+                    if (verifyResult.success && verifyResult.payment_complete) {
                         setResultType('success');
                         setResultMessage(verifyResult.message || 'Payment completed successfully');
                         setShowResultModal(true);
-
-                        // wait 3s then navigate to loans
-                        setTimeout(() => {
-                            navigate('/loans');
-                        }, 3000);
-                    } else if (verifyResult.success && !verifyResult.data?.payment_complete) {
+                    } else if (verifyResult.success && !verifyResult.payment_complete) {
                         setResultType('pending');
                         setResultMessage(verifyResult.message || 'Payment is still pending.');
                         setShowResultModal(true);
@@ -292,7 +285,12 @@ const MakePaymentComponent: React.FC<MakePaymentProps> = ({ loanId, defaultAmoun
                                         <UniversalButton
                                             className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold py-3 px-6 rounded-2xl shadow-lg"
                                             title="OK"
-                                            handleClick={() => setShowResultModal(false)}
+                                            handleClick={() => {
+                                                setShowResultModal(false);
+                                                if (resultType === 'success') {
+                                                    navigate('/loans');
+                                                }
+                                            }}
                                         />
                                     )}
                                 </div>

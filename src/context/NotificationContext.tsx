@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useAuthStore from "@/store/UseAuthStore";
 import { Notification } from "@/types/NotificationType";
 import notificationServer from "@/hooks/useNotificationsQueries";
@@ -30,7 +30,8 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const { user, token } = useAuthStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [eventSource, setEventSource] = useState<EventSource | null>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { respondToRequest } = notificationServer();
 
@@ -62,36 +63,91 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const setupEventStream = useCallback(() => {
-    if (!token || (pathname !== "/" && pathname !== "/notifications")) return;
-
-    // Close existing connection if any
-    if (eventSource) {
-      eventSource.close();
+    if (!token || (pathname !== "/" && pathname !== "/notifications")) {
+      // Close connection if we're not on the right page
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+      return;
     }
 
+    // Close existing connection if any
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+    }
+
+    // Clear any pending reconnection
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+
+    const baseURL = import.meta.env.VITE_FAIRTRADE_LOCAL;
+    if (!baseURL) {
+      console.error("VITE_FAIRTRADE_LOCAL environment variable is not set");
+      return;
+    }
+
+    const eventSourceUrl = `${baseURL}notifications?api_token=${token}`;
+    console.log("Connecting to EventSource:", eventSourceUrl);
+
     // Include the token as a query parameter if needed
-    const newEventSource = new EventSource(
-      `${import.meta.env.VITE_FAIRTRADE_LOCAL}notifications?api_token=${token}`
-    );
+    const newEventSource = new EventSource(eventSourceUrl);
+
+    // Handle successful connection
+    newEventSource.onopen = () => {
+      console.log("EventSource connected successfully");
+      console.log("EventSource readyState:", newEventSource.readyState);
+    };
 
     // Listen for the event with the name 'notification'
     newEventSource.addEventListener("notification", (event) => {
-      const data = JSON.parse(event.data);
-      if (data.success && data.data) {
-        setNotifications(data.data);
+      try {
+        const data = JSON.parse(event.data);
+        console.log("Received notification event:", data);
+        if (data.success && data.data) {
+          setNotifications(data.data);
+        }
+      } catch (error) {
+        console.error("Error parsing notification data:", error);
       }
     });
 
+    // Handle generic messages (fallback)
+    newEventSource.onmessage = (event) => {
+      console.log("EventSource message received:", event);
+      try {
+        const data = JSON.parse(event.data);
+        if (data.success && data.data) {
+          setNotifications(data.data);
+        }
+      } catch (error) {
+        console.error("Error parsing message data:", error);
+      }
+    };
+
+    // Handle errors
     newEventSource.onerror = (error) => {
       console.error("EventSource error:", error);
-      setTimeout(setupEventStream, 5000);
+      console.log("EventSource readyState:", newEventSource.readyState);
+      
+      // Only reconnect if connection was closed or failed
+      if (newEventSource.readyState === EventSource.CLOSED) {
+        console.log("EventSource closed, attempting to reconnect in 5 seconds...");
+        // Close the current connection
+        newEventSource.close();
+        eventSourceRef.current = null;
+        
+        // Schedule reconnection
+        reconnectTimeoutRef.current = setTimeout(() => {
+          setupEventStream();
+        }, 5000);
+      }
     };
 
-    setEventSource(newEventSource);
-
-    return () => {
-      newEventSource.close();
-    };
+    eventSourceRef.current = newEventSource;
   }, [token, pathname]);
 
   const handleAccept = async (data: Notification): Promise<void> => {
@@ -178,20 +234,35 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Close the event source if it exists
-    if (eventSource) {
-      eventSource.close();
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
     }
 
-    if (!token || (pathname !== "/" && pathname !== "/notifications")) return;
+    // Clear any pending reconnection
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+
+    if (!token || (pathname !== "/" && pathname !== "/notifications")) {
+      return;
+    }
 
     setupEventStream();
 
     return () => {
-      if (eventSource) {
-        eventSource.close();
+      if (eventSourceRef.current) {
+        console.log("Cleaning up EventSource connection");
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
       }
     };
-  }, [token, pathname]);
+  }, [setupEventStream]);
 
   return (
     <NotificationContext.Provider
