@@ -14,12 +14,12 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useUserAccount } from "@/context/UserAccountContext";
 import useCurrencyFormatter from "@/hooks/useCurrencyFormatter";
 import { Modal, UniversalButton, CircularProgressBar, SupportContactDrawer } from "@/components";
-import { useNotification } from "@/context/NotificationContext";
+import { useNotifications } from "@/context/NotificationsContext";
 
 const HomeComponent = () => {
   const navigate = useNavigate();
   const { user, profile } = useAuthStore();
-  const { notifications } = useNotification();
+  const { unreadCount } = useNotifications();
   const {
     loadingRecentLoan,
     recentLoanInformation,
@@ -47,124 +47,122 @@ const HomeComponent = () => {
     <>
       <div className="min-h-screen pb-24">
         {/* Header Section with Curved Background */}
-        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 pb-8 pt-12 px-4 rounded-b-3xl shadow-xl">
-          {/* Decorative Elements */}
-          <div className="absolute top-4 right-4 w-20 h-20 bg-secondary/10 rounded-full blur-xl"></div>
-          <div className="absolute bottom-8 left-8 w-16 h-16 bg-light/10 rounded-full blur-lg"></div>
+        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 py-20 px-4 rounded-b-3xl shadow-xl w-full lg:max-w-none lg:rounded-b-none">
+          <div className="max-w-6xl mx-auto ">
+            {/* Decorative Elements */}
+            <div className="absolute top-4 right-4 w-20 h-20 bg-secondary/10 rounded-full blur-xl"></div>
+            <div className="absolute bottom-8 left-8 w-16 h-16 bg-light/10 rounded-full blur-lg"></div>
 
-          {/* User Profile and Notification */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex items-center space-x-4">
+            {/* User Profile and Notification */}
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  {profile ? (
+                    <img
+                      src={profile}
+                      alt="Profile"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-3 border-white/20 shadow-lg bg-white/10 backdrop-blur-sm border-2 border-white/20"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border-2 border-white/20">
+                      <FaCircleUser className="text-4xl sm:text-5xl text-white/80" />
+                    </div>
+                  )}
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary rounded-full border-2 border-white"></div>
+                </div>
+
+                <div>
+                  <h1 className="text-white font-bold text-xl sm:text-2xl leading-tight">
+                    {loadingRecentLoan ? (
+                      <Skeleton
+                        width={150}
+                        height={28}
+                        baseColor="#ffffff20"
+                        highlightColor="#ffffff40"
+                      />
+                    ) : (
+                      `Hello, ${user?.first_name}! 👋`
+                    )}
+                  </h1>
+                  <p className="text-white/80 text-sm sm:text-base font-medium">
+                    {loadingRecentLoan ? (
+                      <Skeleton
+                        width={120}
+                        baseColor="#ffffff20"
+                        highlightColor="#ffffff40"
+                      />
+                    ) : (
+                      "Ready to manage your finances?"
+                    )}
+                  </p>
+                </div>
+              </div>
+
               <div className="relative">
-                {profile ? (
-                  <img
-                    src={profile}
-                    alt="Profile"
-                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-3 border-white/20 shadow-lg"
-                  />
-                ) : (
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border-2 border-white/20">
-                    <FaCircleUser className="text-4xl sm:text-5xl text-white/80" />
+                <button
+                  onClick={() => navigate("/notifications")}
+                  className="bg-white/10 backdrop-blur-sm rounded-full p-3 border border-white/20 hover:bg-white/20 transition-all duration-200 active:scale-95"
+                >
+                  <IoMdNotifications className="text-2xl text-white" />
+                </button>
+
+                {unreadCount > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center px-1 shadow-lg animate-pulse">
+                    {unreadCount}
                   </div>
                 )}
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-secondary rounded-full border-2 border-white"></div>
-              </div>
-
-              <div>
-                <h1 className="text-white font-bold text-xl sm:text-2xl leading-tight">
-                  {loadingRecentLoan ? (
-                    <Skeleton
-                      width={150}
-                      height={28}
-                      baseColor="#ffffff20"
-                      highlightColor="#ffffff40"
-                    />
-                  ) : (
-                    `Hello, ${user?.first_name}! 👋`
-                  )}
-                </h1>
-                <p className="text-white/80 text-sm sm:text-base font-medium">
-                  {loadingRecentLoan ? (
-                    <Skeleton
-                      width={120}
-                      baseColor="#ffffff20"
-                      highlightColor="#ffffff40"
-                    />
-                  ) : (
-                    "Ready to manage your finances?"
-                  )}
-                </p>
               </div>
             </div>
 
-            <div className="relative">
-              <button
-                onClick={() => navigate("/notifications")}
-                className="bg-white/10 backdrop-blur-sm rounded-full p-3 border border-white/20 hover:bg-white/20 transition-all duration-200 active:scale-95"
-              >
-                <IoMdNotifications className="text-2xl text-white" />
-              </button>
-
-              {notifications.length > 0 && (
-                <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full min-w-[20px] h-5 flex items-center justify-center px-1 shadow-lg animate-pulse">
-                  {
-                    notifications.filter(
-                      (notification) => !notification.is_read
-                    ).length
-                  }
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Quick Stats Cards */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-              <div className="flex items-center space-x-3">
-                <div className="bg-secondary/20 rounded-xl p-2">
-                  <GiReceiveMoney className="text-secondary text-xl" />
-                </div>
-                <div>
-                  <p className="text-white/70 text-xs font-medium">
-                    Total Loans
-                  </p>
-                  <p className="text-white font-bold text-lg">
-                    {loadingRecentLoan ? (
-                      <Skeleton
-                        width={40}
-                        baseColor="#ffffff20"
-                        highlightColor="#ffffff40"
-                      />
-                    ) : (
-                      activeLoansCount
-                    )}
-                  </p>
+            {/* Quick Stats Cards */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-secondary/20 rounded-xl p-2">
+                    <GiReceiveMoney className="text-secondary text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-white/70 text-xs font-medium">
+                      Total Loans
+                    </p>
+                    <p className="text-white font-bold text-lg">
+                      {loadingRecentLoan ? (
+                        <Skeleton
+                          width={40}
+                          baseColor="#ffffff20"
+                          highlightColor="#ffffff40"
+                        />
+                      ) : (
+                        activeLoansCount
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-              <div className="flex items-center space-x-3">
-                <div className="bg-light/20 rounded-xl p-2">
-                  <FaMoneyCheckAlt className="text-light text-xl" />
-                </div>
-                <div>
-                  <p className="text-white/70 text-xs font-medium">
-                    Active Status
-                  </p>
-                  <p className="text-white font-bold text-sm">
-                    {loadingRecentLoan ? (
-                      <Skeleton
-                        width={60}
-                        baseColor="#ffffff20"
-                        highlightColor="#ffffff40"
-                      />
-                    ) : activeLoansCount > 0 ? (
-                      "Active"
-                    ) : (
-                      "No Loans"
-                    )}
-                  </p>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-light/20 rounded-xl p-2">
+                    <FaMoneyCheckAlt className="text-light text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-white/70 text-xs font-medium">
+                      Active Status
+                    </p>
+                    <p className="text-white font-bold text-sm">
+                      {loadingRecentLoan ? (
+                        <Skeleton
+                          width={60}
+                          baseColor="#ffffff20"
+                          highlightColor="#ffffff40"
+                        />
+                      ) : activeLoansCount > 0 ? (
+                        "Active"
+                      ) : (
+                        "No Loans"
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -172,7 +170,7 @@ const HomeComponent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="px-4 -mt-4 relative z-10 space-y-6">
+        <div className="max-w-6xl mx-auto px-4 -mt-4 relative z-10 space-y-6">
           {/* Loan Overview Card */}
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Card Header */}

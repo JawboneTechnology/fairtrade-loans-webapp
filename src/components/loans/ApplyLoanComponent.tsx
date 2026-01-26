@@ -24,15 +24,20 @@ const ApplyLoanComponent = () => {
 
   const toggleSuccessModal = () => setShowSuccessModal(!showSuccessModal);
   const toggleShowFeatureModal = () => setShowFeatureModal(!showFeatureModal);
-  const { applyLoan, loanApplication, loadingLoanApply, selectedLoanType } =
+  const { applyLoan, loanApplication, loadingLoanApply, selectedLoanType, guarantors } =
     useLoans();
   const isProduction = useEnvironment();
+
+  // Get selected guarantor details
+  const selectedGuarantors = guarantors.filter((guarantor) =>
+    loanApplication?.guarantors?.includes(guarantor.id)
+  );
 
   return (
     <>
       <div className="min-h-screen">
         {/* Header Section with Gradient Background */}
-        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 pb-8 pt-12 px-4 rounded-b-3xl shadow-xl">
+        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 pb-8 pt-12 px-4 rounded-b-3xl md:rounded-b-sm shadow-xl">
           {/* Decorative Elements */}
           <div className="absolute top-4 right-4 w-20 h-20 bg-secondary/10 rounded-full blur-xl"></div>
           <div className="absolute bottom-8 left-8 w-16 h-16 bg-light/10 rounded-full blur-lg"></div>
@@ -66,7 +71,7 @@ const ApplyLoanComponent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="px-4 -mt-4 relative z-10 space-y-6 pb-32">
+        <div className="max-w-6xl mx-auto px-4 -mt-4 relative z-10 space-y-6 pb-32 lg:pb-10">
           {/* Loan Type Selection Card */}
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
             <LoanTypes />
@@ -97,7 +102,7 @@ const ApplyLoanComponent = () => {
       </div>
 
       {/* Fixed Apply Button at Bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl lg:static lg:border lg:border-gray-100 lg:rounded-3xl lg:shadow-xl lg:mx-0">
         <div className="max-w-[90%] sm:max-w-[80%] mx-auto p-4">
           <button
             onClick={toggleShowFeatureModal}
@@ -139,13 +144,47 @@ const ApplyLoanComponent = () => {
               provided the correct information.
             </p>
 
-            <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 p-4 rounded-2xl mb-6">
-              <p className="text-sm text-dark/80 text-center">
-                <span className="font-semibold">📧 Important:</span> All the guarantors you selected will receive an email to confirm
-                their participation in your loan application. You will be notified
-                when each of them confirms.
-              </p>
-            </div>
+            {/* Selected Guarantors Section */}
+            {selectedGuarantors.length > 0 && (
+              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 p-4 rounded-2xl mb-4">
+                <h4 className="font-semibold text-dark mb-3 text-center">
+                  👥 Selected Guarantors ({selectedGuarantors.length})
+                </h4>
+                <div className="space-y-2">
+                  {selectedGuarantors.map((guarantor) => (
+                    <div
+                      key={guarantor.id}
+                      className="flex items-center justify-between bg-white/60 rounded-lg px-3 py-2 border border-primary/10"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                          <span className="text-primary font-semibold text-sm">
+                            {guarantor.first_name?.[0]?.toUpperCase()}
+                            {guarantor.last_name?.[0]?.toUpperCase()}
+                          </span>
+                        </div>
+                        <span className="text-sm font-medium text-dark">
+                          {guarantor.first_name} {guarantor.last_name}
+                        </span>
+                      </div>
+                      <div className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">
+                        ✓ Selected
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedLoanType?.name?.toLowerCase().includes("business") && (
+              <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 p-4 rounded-2xl mb-6">
+                <p className="text-sm text-dark/80 text-center">
+                  <span className="font-semibold">📧 Important:</span> All the guarantors you selected will receive an email to confirm
+                  their participation in your loan application. You will be notified
+                  when each of them confirms.
+                </p>
+              </div>
+            )}
 
             <div className="space-y-3">
               {/* Apply Button */}

@@ -31,8 +31,10 @@ export default {
       colors: {
         dark: "#333333",
         light: "#e7f8fe",
-        primary: "#0fc0fc",
+        primary: "#13356d",
         secondary: "#d5ff47",
+        brand: "#13356d",
+        brandLight: "#154188",
       },
     },
   },

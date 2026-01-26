@@ -138,7 +138,7 @@ const PaymentsComponent: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="px-4 -mt-4 relative z-10 pb-6">
+        <div className="max-w-6xl mx-auto px-4 -mt-4 relative z-10 pb-6">
           {initialLoading ? (
             <PaymentSkeletonLoader />
           ) : error ? (

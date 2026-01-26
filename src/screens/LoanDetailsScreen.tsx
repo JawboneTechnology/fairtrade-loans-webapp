@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { WebsiteWrapper } from "@/screens";
 import { useLocation } from "react-router-dom";
 import { LoanDetailsComponent } from "@/components";
 import { useUserAccount } from "@/context/UserAccountContext";
@@ -16,9 +15,7 @@ const LoanDetailsScreen = () => {
   }, [loanId]);
 
   return (
-    <WebsiteWrapper>
-      <LoanDetailsComponent />
-    </WebsiteWrapper>
+    <LoanDetailsComponent />
   );
 };
 

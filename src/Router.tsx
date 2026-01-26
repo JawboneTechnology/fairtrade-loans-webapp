@@ -5,11 +5,11 @@ import useScreenSize from "./hooks/useScreenSize";
 import {
   AuthRedirect,
   GuestRedirect,
+  HomeGate,
   InstallPrompt,
   OfflineIndicator,
 } from "./components";
 import {
-  Home,
   Login,
   Loans,
   Grants,
@@ -43,7 +43,7 @@ function App() {
       <Routes>
         {/* Authenticated Routes */}
         <Route element={<OpenLayout />}>
-          <Route path="/" element={<AuthRedirect element={<Home />} />} />
+          <Route path="/" element={<HomeGate />} />
           <Route path="/loans" element={<AuthRedirect element={<Loans />} />} />
           <Route
             path="/grants"

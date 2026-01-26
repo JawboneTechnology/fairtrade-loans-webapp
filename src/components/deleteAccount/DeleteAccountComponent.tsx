@@ -37,7 +37,7 @@ const DeleteAccountComponent = () => {
     <>
       <div className="min-h-screen">
         {/* Header Section with Gradient Background */}
-        <div className="relative bg-gradient-to-br from-red-600 via-red-500 to-red-600 pb-8 pt-12 px-4 rounded-b-3xl shadow-xl">
+        <div className="relative bg-gradient-to-br from-red-600 via-red-500 to-red-600 pb-8 pt-12 px-4 rounded-b-3xl md:rounded-b-md shadow-xl">
           {/* Decorative Elements */}
           <div className="absolute top-4 right-4 w-20 h-20 bg-red-400/20 rounded-full blur-xl"></div>
           <div className="absolute bottom-8 left-8 w-16 h-16 bg-red-300/20 rounded-full blur-lg"></div>
@@ -71,7 +71,7 @@ const DeleteAccountComponent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="px-4 -mt-4 relative z-10 pb-32">
+        <div className="max-w-6xl mx-auto px-4 -mt-4 relative z-10 pb-32 lg:pb-10">
           {/* Warning Card */}
           <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 rounded-3xl p-6 mb-6">
             <div className="flex items-start space-x-3">
@@ -144,7 +144,7 @@ const DeleteAccountComponent = () => {
       </div>
 
       {/* Fixed Delete Button at Bottom */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl lg:static lg:border lg:border-gray-100 lg:rounded-3xl lg:shadow-xl">
         <div className="max-w-[90%] sm:max-w-[80%] mx-auto p-4">
           <button
             onClick={toggleShowDeleteConfirm}

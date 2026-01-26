@@ -1,29 +1,40 @@
+
 import { useEffect } from "react";
-import { WebsiteWrapper } from "@/screens";
 import { useLoans } from "@/context/LoanContext";
 import { useUserAccount } from "@/context/UserAccountContext";
-import { BottomDrawer, LoansComponent, LoanTypeDetails } from "@/components";
+import { BottomDrawer, RightDrawer, LoansComponent, LoanTypeDetails } from "@/components";
+import useScreenSize from "@/hooks/useScreenSize";
 
 const LoansScreen = () => {
+
   const { getUserLoans } = useUserAccount();
   const { showLoanTypeDrawer, toggleShowLoanTypeDrawer } = useLoans();
+  const { isDesktop } = useScreenSize();
 
   useEffect(() => {
     getUserLoans();
   }, []);
   return (
     <>
-      <WebsiteWrapper>
-        <LoansComponent />
-      </WebsiteWrapper>
+      <LoansComponent />
 
-      <BottomDrawer
-        isOpen={showLoanTypeDrawer}
-        onClose={toggleShowLoanTypeDrawer}
-        drawerHeight="100%"
-      >
-        <LoanTypeDetails />
-      </BottomDrawer>
+      {isDesktop ? (
+        <RightDrawer
+          isOpen={showLoanTypeDrawer}
+          onClose={toggleShowLoanTypeDrawer}
+          drawerWidth="600px"
+        >
+          <LoanTypeDetails />
+        </RightDrawer>
+      ) : (
+        <BottomDrawer
+          isOpen={showLoanTypeDrawer}
+          onClose={toggleShowLoanTypeDrawer}
+          drawerHeight="100%"
+        >
+          <LoanTypeDetails />
+        </BottomDrawer>
+      )}
     </>
   );
 };

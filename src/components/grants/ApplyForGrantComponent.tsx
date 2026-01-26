@@ -153,9 +153,9 @@ const ApplyForGrantComponent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary/10 via-white to-primary/5">
+    <div className="min-h-screen">
       {/* Header with Back Button */}
-      <div className="bg-gradient-to-r from-secondary to-secondary/80 p-6 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-secondary to-secondary/80 p-6 md:py-20 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-dark/5 rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-dark/10 rounded-full translate-y-12 -translate-x-12"></div>
 
@@ -179,7 +179,7 @@ const ApplyForGrantComponent = () => {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-6 pb-[120px]">
+      <div className="max-w-6xl mx-auto p-6 pb-[120px] lg:pb-8">
         {/* Application Form */}
         <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8 mt-6 space-y-8">
           {/* Grant Type Selection */}
@@ -223,27 +223,24 @@ const ApplyForGrantComponent = () => {
                       }));
                       setErrors((prev) => ({ ...prev, grant_type_id: "" }));
                     }}
-                    className={`p-6 border-2 rounded-2xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] active:scale-95 ${
-                      formData.grant_type_id === grantType.id
-                        ? "border-primary bg-gradient-to-r from-primary/5 to-primary/10 shadow-xl"
-                        : "border-gray-200 hover:border-primary/30 hover:shadow-lg"
-                    }`}
+                    className={`p-6 border-2 rounded-2xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] active:scale-95 ${formData.grant_type_id === grantType.id
+                      ? "border-primary bg-gradient-to-r from-primary/5 to-primary/10 shadow-xl"
+                      : "border-gray-200 hover:border-primary/30 hover:shadow-lg"
+                      }`}
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center space-x-3">
                         <div
-                          className={`p-3 rounded-2xl ${
-                            formData.grant_type_id === grantType.id
-                              ? "bg-primary/20"
-                              : "bg-gray-100"
-                          }`}
+                          className={`p-3 rounded-2xl ${formData.grant_type_id === grantType.id
+                            ? "bg-primary/20"
+                            : "bg-gray-100"
+                            }`}
                         >
                           <FaGift
-                            className={`text-xl ${
-                              formData.grant_type_id === grantType.id
-                                ? "text-primary"
-                                : "text-gray-600"
-                            }`}
+                            className={`text-xl ${formData.grant_type_id === grantType.id
+                              ? "text-primary"
+                              : "text-gray-600"
+                              }`}
                           />
                         </div>
                         <h3 className="font-bold text-lg text-dark">
@@ -328,9 +325,8 @@ const ApplyForGrantComponent = () => {
                   name="dependent_id"
                   value={formData.dependent_id}
                   onChange={handleChange}
-                  className={`w-full px-6 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-dark font-medium transition-all ${
-                    errors.dependent_id ? "border-red-300" : "border-gray-200"
-                  }`}
+                  className={`w-full px-6 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-dark font-medium transition-all ${errors.dependent_id ? "border-red-300" : "border-gray-200"
+                    }`}
                 >
                   <option value="">Choose a family member</option>
                   {dependents.map((dependent) => (
@@ -377,9 +373,8 @@ const ApplyForGrantComponent = () => {
                   min="0"
                   max={selectedGrantType?.max_amount || ""}
                   step="100"
-                  className={`block w-full pl-20 pr-6 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-dark font-semibold text-lg transition-all ${
-                    errors.amount ? "border-red-300" : "border-gray-200"
-                  }`}
+                  className={`block w-full pl-20 pr-6 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-dark font-semibold text-lg transition-all ${errors.amount ? "border-red-300" : "border-gray-200"
+                    }`}
                   placeholder="0"
                 />
               </div>
@@ -431,21 +426,19 @@ const ApplyForGrantComponent = () => {
                 onChange={handleChange}
                 rows={6}
                 maxLength={500}
-                className={`block w-full px-6 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-dark font-medium transition-all resize-none ${
-                  errors.reason ? "border-red-300" : "border-gray-200"
-                }`}
+                className={`block w-full px-6 py-4 border-2 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-dark font-medium transition-all resize-none ${errors.reason ? "border-red-300" : "border-gray-200"
+                  }`}
                 placeholder="Please provide a detailed explanation of why you need this grant. Include specific circumstances and how the grant will help you or your family member. (Minimum 20 characters required)"
               />
 
               <div className="mt-4 flex justify-between items-center">
                 <div
-                  className={`text-sm font-medium ${
-                    formData.reason.length < 20
-                      ? "text-amber-600"
-                      : formData.reason.length > 450
+                  className={`text-sm font-medium ${formData.reason.length < 20
+                    ? "text-amber-600"
+                    : formData.reason.length > 450
                       ? "text-red-600"
                       : "text-green-600"
-                  }`}
+                    }`}
                 >
                   {formData.reason.length}/500 characters
                   {formData.reason.length < 20 && (
@@ -467,16 +460,15 @@ const ApplyForGrantComponent = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t border-gray-200 p-6 z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t border-gray-200 p-6 z-50 lg:static lg:border lg:border-gray-100 lg:rounded-3xl lg:shadow-xl lg:mt-6">
           <div className="max-w-4xl mx-auto">
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || loadingGrantTypes || loadingDependents}
-              className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-95 shadow-xl hover:shadow-2xl flex items-center justify-center space-x-3 ${
-                isSubmitting || loadingGrantTypes || loadingDependents
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary hover:to-secondary text-dark"
-              }`}
+              className={`w-full py-4 px-8 rounded-2xl font-bold text-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-95 shadow-xl hover:shadow-2xl flex items-center justify-center space-x-3 ${isSubmitting || loadingGrantTypes || loadingDependents
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary hover:to-secondary text-dark"
+                }`}
             >
               {isSubmitting ? (
                 <>

@@ -126,7 +126,14 @@ export const LoanProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    setLoanTypes(data);
+    // Handle paginated response: data.data is the array
+    let types = [];
+    if (Array.isArray(data)) {
+      types = data;
+    } else if (data && Array.isArray(data.data)) {
+      types = data.data;
+    }
+    setLoanTypes(types);
     setLoadingLoanTypes(false);
     toggleShowLoanTypeDrawer();
   };

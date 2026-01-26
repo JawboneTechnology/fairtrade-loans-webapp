@@ -24,7 +24,7 @@ export const QRCodeGenerator = ({
           width: size,
           margin: 2,
           color: {
-            dark: "#0fc0fc", // Primary color
+            dark: "#154188", // Primary color
             light: "#FFFFFF",
           },
           errorCorrectionLevel: "M",
@@ -50,7 +50,7 @@ export const QRCodeGenerator = ({
         className={`flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand"></div>
       </div>
     );
   }

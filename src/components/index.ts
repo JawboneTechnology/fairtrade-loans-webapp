@@ -7,6 +7,7 @@ export { default as ProgressBar } from "./utils/ProgressBar";
 export { default as BottomDrawer } from "./utils/BottomDrawer";
 export { default as SupportContactDrawer } from "./utils/SupportContactDrawer";
 export { default as AuthRedirect } from "./utils/AuthRedirect";
+export { default as HomeGate } from "./utils/HomeGate";
 export { default as CustomSwitch } from "./utils/CustomSwitch";
 export { default as FilesUploader } from "./utils/FilesUploader";
 export { default as TextareaInput } from "./utils/TextareaInput";

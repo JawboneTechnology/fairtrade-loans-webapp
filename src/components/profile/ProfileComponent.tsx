@@ -21,7 +21,7 @@ const ProfileComponent = () => {
     <>
       <div className="min-h-screen pb-24">
         {/* Header Section with Profile Card */}
-        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 pb-8 pt-12 px-4 rounded-b-3xl shadow-xl">
+        <div className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 pb-8 pt-12 px-4 rounded-b-3xl md:rounded-b-md shadow-xl">
           {/* Decorative Elements */}
           <div className="absolute top-4 right-4 w-20 h-20 bg-secondary/10 rounded-full blur-xl"></div>
           <div className="absolute bottom-8 left-8 w-16 h-16 bg-light/10 rounded-full blur-lg"></div>
@@ -96,7 +96,7 @@ const ProfileComponent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="px-4 mt-8 space-y-6">
+        <div className="max-w-6xl mx-auto px-4 mt-8 space-y-6">
           {/* Employment Details Card */}
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
             <div className="flex items-center space-x-2 mb-6">

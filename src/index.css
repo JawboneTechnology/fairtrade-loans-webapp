@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --primary-color: #0fc0fc;
+  --primary-color: #13356d;
   --secondary-color: #d5ff47;
   --gray-color: #f4f4f4;
   --light-color: #e7f8fe;
@@ -46,27 +46,44 @@ body {
   .bg-primary {
     background-color: var(--primary-color);
   }
+
   .text-primary {
     color: var(--primary-color);
   }
+
   .border-primary {
     border-color: var(--primary-color);
   }
+
   .bg-secondary {
     background-color: var(--secondary-color);
   }
+
   .text-secondary {
     color: var(--secondary-color);
   }
+
   .border-secondary {
     border-color: var(--secondary-color);
   }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Subtle background pattern (light grid + dots) */
+  .bg-pattern {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(15, 192, 252, 0.12) 1px, transparent 1px),
+      linear-gradient(to right, rgba(51, 51, 51, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(51, 51, 51, 0.06) 1px, transparent 1px);
+    background-size: 24px 24px, 48px 48px, 48px 48px;
+    background-position: 0 0, 0 0, 0 0;
   }
 }
 
@@ -82,7 +99,7 @@ body {
 }
 
 .custom-switch.active {
-  background-color: #29a3ff;
+  background-color: #13356d;
 }
 
 .custom-switch .switch-toggle {

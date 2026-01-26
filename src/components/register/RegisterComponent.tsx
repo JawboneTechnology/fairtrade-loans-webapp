@@ -137,7 +137,7 @@ const RegisterComponent = () => {
         </div>
 
         {/* Main Content */}
-        <div className="px-4 -mt-4 relative z-10 pb-32">
+        <div className="px-4 -mt-4 relative z-10 pb-32 lg:pb-10">
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
               <div className="space-y-4">
@@ -157,7 +157,7 @@ const RegisterComponent = () => {
       </div>
 
       {/* Step Controls - Fixed Bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl z-30 lg:static lg:border lg:border-gray-100 lg:rounded-3xl lg:shadow-xl">
         <div className="max-w-2xl mx-auto px-4 py-4">
           <div className="flex items-center gap-3">
             {step > 1 && (

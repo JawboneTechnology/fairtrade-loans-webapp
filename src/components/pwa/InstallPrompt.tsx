@@ -81,22 +81,24 @@ export const InstallPrompt: React.FC = () => {
 
   return (
     <div className="fixed top-4 left-4 right-4 z-50 md:left-auto md:right-4 md:max-w-sm">
-      <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 flex items-center gap-3">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 flex items-start gap-3">
         <div className="flex-1">
           <h3 className="font-semibold text-gray-900 text-sm">
-            Install Fairtrade Loans
+            Install JSTL
           </h3>
-          <p className="text-xs text-gray-600 mt-1">
-            Get quick access to loans and grants on your device
+          <p className="text-xs text-gray-600 mt-1 mb-3">
+            Get quick access to financial solutions for small businesses on your device
           </p>
+
+          <button
+            onClick={handleInstallClick}
+            className="flex items-center gap-2 bg-brand hover:bg-brand/90 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+          >
+            <Download size={16} />
+            Install
+          </button>
         </div>
-        <button
-          onClick={handleInstallClick}
-          className="flex items-center gap-2 bg-primary hover:bg-cyan-600 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
-        >
-          <Download size={16} />
-          Install
-        </button>
+
         <button
           onClick={handleDismiss}
           className="text-gray-400 hover:text-gray-600 p-1"

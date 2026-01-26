@@ -203,7 +203,7 @@ const SelectGuarantorsComponent = ({ onClose }: SelectGuarantorsProps) => {
       </div>
 
       {/* Continue Button */}
-      <div className="fixed bottom-0 left-0 right-0 p-3 bg-white border border-gray-200 w-full sm:max-w-[80%] mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 p-3 bg-white border border-gray-200 w-full sm:max-w-[80%] mx-auto lg:static lg:border lg:border-gray-100 lg:rounded-3xl lg:shadow-xl lg:mt-6">
         <button
           onClick={onClose}
           className="bg-primary text-white py-3 px-6 rounded-lg w-full"

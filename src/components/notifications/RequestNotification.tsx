@@ -30,7 +30,6 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({
     setIsProcessing(true);
     try {
       await action();
-      await markAsRead();
       console.log(successMessage);
     } catch (error) {
       console.log(errorMessage);
@@ -239,7 +238,23 @@ const RequestNotification: React.FC<RequestNotificationProps> = ({
           "guarantor_request",
           "guarantor_rejection",
           "guarantor_acceptance",
-        ].includes(request.type) && renderNotificationContent()}
+        ].includes(request.type) ? (
+          renderNotificationContent()
+        ) : (
+          <>
+            <p
+              className={`text-sm mb-3 leading-relaxed ${
+                isRead ? "text-gray-400" : "text-dark/70"
+              }`}
+            >
+              {request.message}
+            </p>
+            <div className="flex items-center text-xs text-gray-400">
+              <span className="mr-1">🕐</span>
+              {request.human_date}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Action Buttons */}

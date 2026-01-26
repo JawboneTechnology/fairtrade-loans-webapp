@@ -1,4 +1,5 @@
 export { default as Home } from "./HomeScreen";
+export { default as Landing } from "./LandingScreen";
 export { default as Login } from "./LoginScreen";
 export { default as WebsiteWrapper } from "./WebsiteWrapper";
 export { default as PasswordReset } from "./PasswordResetScreen";
