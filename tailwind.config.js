@@ -35,6 +35,7 @@ export default {
         secondary: "#d5ff47",
         brand: "#13356d",
         brandLight: "#154188",
+        brandDark: "#a5a7aa",
       },
     },
   },

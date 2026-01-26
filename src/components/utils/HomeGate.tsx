@@ -1,6 +1,4 @@
-import { Navigate } from "react-router-dom";
 import useAuthStore from "@/store/UseAuthStore";
-import useScreenSize from "@/hooks/useScreenSize";
 import { Home, Landing } from "@/screens";
 
 /**
@@ -11,12 +9,9 @@ import { Home, Landing } from "@/screens";
  */
 const HomeGate = () => {
   const { token } = useAuthStore();
-  const { isDesktop } = useScreenSize();
 
   if (token) return <Home />;
-  if (isDesktop) return <Landing />;
-
-  return <Navigate to="/auth-login" replace />;
+  return <Landing />;
 };
 
 export default HomeGate;
