@@ -8,9 +8,83 @@ import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, fadeIn, scaleIn } from "@/animations/landingAnimations";
 import FadeInAnime from '@/animations/FadeInAnime';
 import { AnimatedTitle } from "@/animations/AnimatedTitle";
+import { useState } from "react";
+import { organizationAccountService, type OrganizationAccountRequest } from "@/services/organizationAccountService";
 
 const LandingScreen = () => {
   const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+  // Form state
+  const [formData, setFormData] = useState<OrganizationAccountRequest>({
+    orgName: '',
+    contactPerson: '',
+    email: '',
+    phone: '',
+    employees: 1,
+    notes: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  // Validation function to check if all required fields are filled
+  const isFormValid = () => {
+    return formData.orgName.trim() !== '' &&
+      formData.contactPerson.trim() !== '' &&
+      formData.email.trim() !== '' &&
+      formData.phone.trim() !== '';
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'employees' ? parseInt(value) || 1 : value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+
+    try {
+      const response = await organizationAccountService.submitRequest(formData);
+
+      if (response.success) {
+        setSubmitMessage({
+          type: 'success',
+          text: response.message || 'Organization account request submitted successfully! Check your email for login credentials.'
+        });
+
+        // Reset form on success
+        setFormData({
+          orgName: '',
+          contactPerson: '',
+          email: '',
+          phone: '',
+          employees: 1,
+          notes: ''
+        });
+      } else {
+        setSubmitMessage({
+          type: 'error',
+          text: response.message || 'Failed to submit request. Please try again.'
+        });
+      }
+    } catch (error: any) {
+      console.error('Form submission error:', error);
+      setSubmitMessage({
+        type: 'error',
+        text: 'An unexpected error occurred. Please try again later.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -280,45 +354,117 @@ const LandingScreen = () => {
           <h2 className="text-4xl md:text-3xl lg:text-5xl font-extrabold text-dark mb-2">Request an Account</h2>
           <p className="text-larg text-dark/60 mb-6">Enable your organization to make secure, bulk payments to employees and manage staff benefits with JSTL. Fill in your details and our team will reach out to help you get started.</p>
 
-          <form className="grid grid-cols-1 sm:grid-cols-2 gap-4" autoComplete="off">
+          {/* Submit Message */}
+          {submitMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`mb-6 p-4 rounded-xl ${submitMessage.type === 'success'
+                ? 'bg-green-50 border border-green-200 text-green-800'
+                : 'bg-red-50 border border-red-200 text-red-800'
+                }`}
+            >
+              {submitMessage.text}
+            </motion.div>
+          )}
+
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4" autoComplete="off">
             <FadeInAnime delay={0.1} className="col-span-1 sm:col-span-2">
-              <label className="block text-sm font-medium text-dark mb-1">Organization Name</label>
-              <input type="text" name="orgName" className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none" placeholder="e.g. Acme Ltd" required />
+              <label className="block text-sm font-medium text-dark mb-1">Organization Name <span className="inline text-red-600">*</span></label>
+              <input
+                type="text"
+                name="orgName"
+                value={formData.orgName}
+                onChange={handleInputChange}
+                className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                placeholder="e.g. Acme Ltd"
+                required
+                disabled={isSubmitting}
+              />
             </FadeInAnime>
 
             <FadeInAnime delay={0.2}>
-              <label className="block text-sm font-medium text-dark mb-1">Contact Person</label>
-              <input type="text" name="contactPerson" className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none" placeholder="Full Name" required />
+              <label className="block text-sm font-medium text-dark mb-1">Contact Person <span className="inline text-red-600">*</span></label>
+              <input
+                type="text"
+                name="contactPerson"
+                value={formData.contactPerson}
+                onChange={handleInputChange}
+                className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                placeholder="Full Name"
+                required
+                disabled={isSubmitting}
+              />
             </FadeInAnime>
 
             <FadeInAnime delay={0.3}>
-              <label className="block text-sm font-medium text-dark mb-1">Email Address</label>
-              <input type="email" name="email" className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none" placeholder="you@company.com" required />
+              <label className="block text-sm font-medium text-dark mb-1">Email Address <span className="inline text-red-600">*</span></label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                placeholder="you@company.com"
+                required
+                disabled={isSubmitting}
+              />
             </FadeInAnime>
 
             <FadeInAnime delay={0.4}>
-              <label className="block text-sm font-medium text-dark mb-1">Phone Number</label>
-              <input type="tel" name="phone" className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none" placeholder="e.g. +254700000000" required />
+              <label className="block text-sm font-medium text-dark mb-1">Phone Number <span className="inline text-red-600">*</span></label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                placeholder="e.g. +254700000000"
+                required
+                disabled={isSubmitting}
+              />
             </FadeInAnime>
 
             <FadeInAnime delay={0.5}>
               <label className="block text-sm font-medium text-dark mb-1">Number of Employees</label>
-              <input type="number" name="employees" min="1" className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none" placeholder="e.g. 25" required />
+              <input
+                type="number"
+                name="employees"
+                value={formData.employees}
+                onChange={handleInputChange}
+                min="1"
+                className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                placeholder="e.g. 25"
+                required
+                disabled={isSubmitting}
+              />
             </FadeInAnime>
 
             <FadeInAnime delay={0.6} className="col-span-1 sm:col-span-2">
               <label className="block text-sm font-medium text-dark mb-1">Additional Notes (optional)</label>
-              <textarea name="notes" rows={2} className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none" placeholder="How can we help your organization?" />
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                rows={2}
+                className="w-full rounded-xl border border-gray-200 px-4 py-2 focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+                placeholder="How can we help your organization?"
+                disabled={isSubmitting}
+              />
             </FadeInAnime>
 
             <FadeInAnime delay={0.7} className="col-span-1 sm:col-span-2 mt-2 w-full md:w-1/4">
               <motion.button
                 type="submit"
-                whileHover={{ scale: 1.06 }}
-                whileTap={{ scale: 0.97 }}
-                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-2xl bg-gradient-to-r from-brand to-primary text-white font-bold shadow-lg shadow-primary/25 transition-all hover:from-primary hover:to-brand"
+                whileHover={isSubmitting || !isFormValid() ? {} : { scale: 1.06 }}
+                whileTap={isSubmitting || !isFormValid() ? {} : { scale: 0.97 }}
+                disabled={isSubmitting || !isFormValid()}
+                className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-2xl font-bold shadow-lg transition-all ${isSubmitting || !isFormValid()
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-brand to-primary text-white shadow-primary/25 hover:from-primary hover:to-brand'
+                  }`}
               >
-                Request Organization Account
+                {isSubmitting ? 'Submitting...' : 'Request Organization Account'}
               </motion.button>
             </FadeInAnime>
           </form>

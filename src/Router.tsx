@@ -34,6 +34,7 @@ import {
   ChangePasswordExternal,
   MakePayment,
 } from "./screens";
+import OrganizationEmailVerificationScreen from "./screens/OrganizationEmailVerificationScreen";
 
 function App() {
   const { isMobile } = useScreenSize();
@@ -135,6 +136,10 @@ function App() {
         <Route
           path="/change-password"
           element={<GuestRedirect element={<ChangePasswordExternal />} />}
+        />
+        <Route
+          path="/verify-organization-email/:token"
+          element={<OrganizationEmailVerificationScreen />}
         />
 
         {/* Catch-all route for 404 - This must be the last route */}
